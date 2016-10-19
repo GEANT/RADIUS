@@ -61,7 +61,7 @@
 # and insert the same also in the same section under Post-Auth-Type REJECT
 #
 # Follow the instructions on
-# https://wiki.terena.org/display/H2eduroam/How+to+deploy+eduroam+on-site+or+on+campus#Howtodeployeduroamon-siteoroncampus-F-Ticks
+# https://wiki.geant.org/display/H2eduroam/How+to+deploy+eduroam+on-site+or+on+campus#Howtodeployeduroamon-siteoroncampus-F-Ticks
 # to configure module f_ticks. Change "%{Realm}" to "%{control:X-Realm}" and
 # "%{Calling-Station-Id}" to "%{control:X-Calling-Station-Id}"
 #
