@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # This script for Freeradius 2.2 and 3.0 anonymizes the MAC address which is sent in the eduroam f-ticks log.
-# It is based on the function in radsecproxy (https://software.uninett.no/radsecproxy/)
+# It is based on the function in radsecproxy (https://software.nordu.net/radsecproxy/)
 # and the radiator-fticks-anonymizer by Johan Carlquist <jocar at su.se>
 # (https://github.com/stockholmuniversity/radiator-fticks-anonymizer/blob/master/fticks_anonymizer)
 # Use it with Freeradius with perl extension. Tested with FR 2.2.8 and 3.0.11
