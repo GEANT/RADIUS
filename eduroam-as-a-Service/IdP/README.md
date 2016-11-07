@@ -1,1 +1,1 @@
-this directory contains confi files for RADIUS-TLS
+this directory contains config files for RADIUS-TLS
