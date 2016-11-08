@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#################################################################
+#                                                               #
+#       Written by Stefan Winter, stefan.winter@restena.lu      #
+#                                                               #
+#################################################################
+#                                                               #
+#       Please send bug reports to stefan.winter@restena.lu     #
+#                                                               #
+#################################################################
+
+echo "Wiping out the entire CA."
+
+rm -r ROOT-CA settings/random 
+
+echo "Done."

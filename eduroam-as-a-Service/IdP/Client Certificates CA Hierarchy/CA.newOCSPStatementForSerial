@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#################################################################
+#                                                               #
+#       Written by Stefan Winter, stefan.winter@restena.lu      #
+#                                                               #
+#################################################################
+#                                                               #
+#       Please send bug reports to stefan.winter@restena.lu     #
+#                                                               #
+#################################################################
+
+echo ""
+echo "eduroam-as-a-Service CA Operation - New OCSP Response for a given serial number"
+echo "==============================================================================="
+
+openssl=$(which openssl)
+version=$($openssl version)
+cnfpath="./settings/"
+
+echo ""
+echo "Ready to create new OCSP Response for serial $1 ..."
+echo "---------------------------------------------------"
+echo ""
+
+$openssl ocsp -issuer ROOT-CA/cacert.pem -sha256 -sha256 -no_nonce -serial $1 -CA ROOT-CA/cacert.pem -ndays 365 -rsigner ROOT-CA/cacert.pem -rkey ROOT-CA/private/cakey.pem -index ROOT-CA/index.txt -no_cert_verify -respout ROOT-CA/OCSP/$1.response.der
+
+echo -e "\n\t\tDone. The new OCSP response is in ROOT-CA/OCSP/$1.response.der\n\n"

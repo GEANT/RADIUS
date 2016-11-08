@@ -1,0 +1,95 @@
+#!/bin/bash
+
+#
+#  this is a script to help generate certificates for use with
+#  the EAP-TLS module.
+#
+#################################################################
+#                                                               #
+#       Written by Steve Walsh, ACU National                    #
+#       and Chris Myers, Grangenet                              #
+#       email: stephen.walsh@acu.edu.au                         #
+#       email: chris.myers@aarnet.edu.au                        #
+#       for the Grangenet/AARNET EduROAM wireless project       #
+#                                                               #
+#                                                               #
+#       Substantially modified for eduroam-as-a-Service use     #
+#       by Stefan Winter, stefan.winter@restena.lu              #
+#                                                               #
+#################################################################
+#                                                               #
+#       Please send bug reports to stephen.walsh@acu.edu.au     #
+#       or to stefan.winter@restena.lu                          #
+#                                                               #
+#################################################################
+
+Pause()                         # Define a shell function called Pause
+{
+    echo
+    echo -n Hit Enter to continue....
+    read
+}
+#
+#To start, let's finds the path and version of openssl
+
+openssl=$(which openssl)
+version=$($openssl version)
+
+currentver=$($openssl version | cut -c 9,11,13)
+
+#Modify this variable with the path to your openssl.cnf file
+#Example - cnfpath=$(/etc/raddb/certs)
+
+cnfpath="./settings/"
+
+if [ "$cnfpath" =  "default" ] ;
+        then 
+	 echo -e
+	 echo -e "Please set the opencnf variable in this script"
+	 echo -e
+	exit
+fi
+
+echo -e ""
+echo -e "\t\t##################"
+echo -e "\t\tCreating new sub-CA certificate"
+echo -e "\t\tname : name-srv"
+echo -e "\t\tserver certificate stored as cert-srv.pem"
+echo -e "\t\tCA.pl -newreq"
+echo -e "\t\tCA.pl -signreq"
+echo -e "\t\tYou need to enter a new common name for this section"
+echo -e "\t\tWe recommend SITENAME_server_cert"
+echo -e "\t\t##################\n"
+
+while true; do
+  echo
+  echo "Please enter the password for the intermediate CA certificate: "
+  read PASSWORD
+  echo "you entered $PASSWORD. Is this correct?(y/n)"
+  read yn
+  case $yn in
+    y* | Y* ) echo "next step.." ; break ;;
+    [nN]* )   echo "Check your keyboard and try again" ;;
+  esac
+done
+
+  echo
+  echo "Please enter the path to put the cert into: "
+  read CERT_PATH
+
+$openssl req -config "$cnfpath/openssl.cnf" -new -newkey rsa:4096 -sha512 -keyout cert-srv-key.pem -out newreq.pem -days 365 -passin pass:$PASSWORD -passout pass:$PASSWORD
+
+$openssl ca -keyfile ./ROOT-CA/private/cakey.pem -extensions v3_intermediate_ca -config "$cnfpath/openssl.cnf" -policy policy_match -out newcert.pem -infiles newreq.pem
+
+
+$openssl pkcs12 -export -in newcert.pem -inkey cert-srv-key.pem -out cert-srv.p12 -clcerts -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl pkcs12 -in cert-srv.p12 -out cert-srv.pem -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl x509 -inform PEM -outform DER -in cert-srv.pem -out cert-srv.der 
+
+/bin/mkdir -p ROOT-CA/certs/$CERT_PATH
+/bin/mv cert-srv.pem cert-srv-key.pem newreq.pem ROOT-CA/certs/$CERT_PATH
+/bin/mv ROOT-CA/certs/$CERT_PATH/newreq.pem ROOT-CA/certs/$CERT_PATH/cert-srv.csr
+echo DONT FORGET TO DELETE THE PRIVATE KEY OUT OF THE CERT!
+/bin/rm new* cert-srv.der cert-srv.p12
+
+echo -e "\n\t\t##################\n"

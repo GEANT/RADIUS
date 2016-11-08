@@ -1,0 +1,95 @@
+#!/bin/bash
+
+#
+#  this is a script to help generate certificates for use with
+#  the EAP-TLS module.
+#
+#################################################################
+#                                                               #
+#       Originally written by Steve Walsh, ACU National         #
+#       and Chris Myers, Grangenet                              #
+#       email: stephen.walsh@acu.edu.au                         #
+#       email: chris.myers@aarnet.edu.au                        #
+#       for the Grangenet/AARNET EduROAM wireless project       #
+#                                                               #
+#       Substantially modified for eduroam-as-a-Service use     #
+#       by Stefan Winter, stefan.winter@restena.lu              #
+#                                                               #
+#################################################################
+#                                                               #
+#       Please send bug reports to stephen.walsh@acu.edu.au     #
+#       or to stefan.winter@restena.lu                          #
+#                                                               #
+#################################################################
+
+Pause()                         # Define a shell function called Pause
+{
+    echo
+    echo -n Hit Enter to continue....
+    read
+}
+#
+#To start, let's finds the path and version of openssl
+
+echo "##############"
+echo "# We are using the following openssl tools, abort with Ctrl-C if that's not what you want:"
+echo "##############"
+
+openssl=$(which openssl)
+version=$($openssl version)
+cascript=./settings/CA.pl
+cnfpath=./settings/openssl.cnf
+# when using the hardware random number generator on a Raspberry Pi, 
+# change the file name to /dev/hwrng
+randomsource=/dev/urandom
+
+echo "openSSL path   : $openssl"
+echo "openSSL version: $version"
+echo "openSSL config : $cnfpath"
+echo "openSSL CA.pl  : $cascript"
+
+echo -n "Generating random source file ... "
+
+dd if=$randomsource of=settings/random count=2
+
+while true; do
+echo
+echo "Please enter the password for the CA: "
+read PASSWORD
+ echo "you entered $PASSWORD. Is this correct? (y/n)"
+ read yn
+  case $yn in
+   y* | Y* ) echo "next step.." ; break ;;
+   [nN]* )   echo "Check your keyboard and try again" ;;
+ esac
+done
+
+echo -e ""
+echo -e "\t\t##################"
+echo -e "\t\tcreating private key and cert request"
+echo -e "\t\t##################\n"
+
+$openssl req -config $cnfpath -new -newkey rsa:4096 -sha512 -x509 -keyout newreq.pem -out newreq.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD 
+
+echo -e ""
+echo -e "\t\t##################"
+echo -e "\t\tcreate CA by self-signing request"
+echo -e "\t\t##################\n"
+
+echo "newreq.pem" | $cascript -newca
+
+echo -e ""
+echo -e "\t\t##################"
+echo -e "\t\texporting CA in varius formats"
+echo -e "\t\t##################\n"
+
+$openssl pkcs12 -export -in ROOT-CA/cacert.pem -inkey newreq.pem -out ROOT-CA/private/root.p12 -cacerts -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl pkcs12 -in ROOT-CA/private/root.p12 -out ROOT-CA/private/root.pem -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl x509 -inform PEM -outform DER -in ROOT-CA/private/root.pem -out ROOT-CA/private/root.der
+mv newreq.pem ROOT-CA/private/
+
+dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-CA/serial
+
+mkdir ROOT-CA/OCSP
+
+
