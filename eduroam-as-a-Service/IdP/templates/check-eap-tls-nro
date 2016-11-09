@@ -1,0 +1,47 @@
+server check-eap-tls-%(nro)s {
+authorize {
+	#
+	# By default, we just accept the request:
+	#
+	update config {
+		&Auth-Type := Accept
+	}
+
+
+	#
+	# Check the client certificate matches a string, and reject otherwise
+	#
+
+	if ("%(proc)s{TLS-Client-Cert-Common-Name}" =~ /%(escaped_realm)s$/) {
+		update config {
+			&Auth-Type := Accept
+		}
+	}
+	else {
+		update config {
+			&Auth-Type := Reject
+		}
+		update reply {
+			&Reply-Message := "Your certificate is not valid."
+		}
+	}
+
+
+	#
+	# Check the client certificate common name against the supplied User-Name
+	#
+	#if (&User-Name == "host/%(proc)s{TLS-Client-Cert-Common-Name}") {
+	#	update config {
+	#		&Auth-Type := Accept
+	#	}
+	#}
+	#else {
+	#	update config {
+	#		&Auth-Type := Reject
+	#	}
+	#}
+	auth_log
+
+}
+}
+

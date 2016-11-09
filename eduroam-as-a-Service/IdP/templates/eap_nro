@@ -1,0 +1,48 @@
+eap eap_%(nro)s{
+	default_eap_type = tls
+	timer_expire     = 60
+	ignore_unknown_eap_types = no
+	cisco_accounting_username_bug = no
+	max_sessions = ${max_requests}
+	# Supported EAP-types
+
+	tls-config tls-common {
+		private_key_file = ${certdir}/silverbullet/%(nro)s.key
+		certificate_file = ${certdir}/silverbullet/%(nro)s.pem
+		ca_path = ${cadir}/silverbullet/
+	#	auto_chain = yes
+		dh_file = ${certdir}/dh
+	#	random_file = /dev/urandom
+	#	fragment_size = 1024
+	#	include_length = yes
+	#	check_crl = yes
+	#	check_all_crl = yes
+	#	check_cert_issuer = "/C=GB/ST=Berkshire/L=Newbury/O=My Company Ltd"
+	#	check_cert_cn = %(proc)s{User-Name}
+		cipher_list = "DEFAULT"
+#		disable_tlsv1_2 = no
+		ecdh_curve = "prime256v1"
+		cache {
+			enable = yes
+			lifetime = 24 # hours
+			max_entries = 255
+		}
+		verify {
+	#		skip_if_ocsp_ok = no
+	#		tmpdir = /tmp/radiusd
+	#		client = "/path/to/openssl verify -CApath ${..ca_path} %(proc)s{TLS-Client-Cert-Filename}"
+		}
+
+		ocsp {
+			enable = no
+			override_cert_url = yes
+			url = "http://127.0.0.1/ocsp/"
+		}
+	}
+
+	tls {
+		# Point to the common TLS configuration
+		tls = tls-common
+		virtual_server = check-eap-tls-%(nro)s
+	}
+}

@@ -1,0 +1,96 @@
+server silverbullet {
+listen {
+	type = auth
+	ipaddr = 127.0.0.1
+	port = 2812
+	limit {
+	      max_connections = 16
+	      lifetime = 0
+	      idle_timeout = 30
+	}
+}
+
+listen {
+	ipaddr = *
+#	ipv6addr = ::
+	port = 2813
+	type = acct
+	limit {
+	}
+}
+
+authorize {
+	filter_username
+	preprocess
+#	operator-name
+#	cui
+	auth_log
+	suffix
+	if (!Realm) {
+		update control {
+			Auth-Type := Reject
+		}
+	}
+	eap {
+		ok = return
+	}
+	files
+	expiration
+	logintime
+}
+
+
+authenticate {
+	eap
+}
+
+
+#
+#  Pre-accounting.  Decide which accounting type to use.
+#
+preacct {
+	preprocess
+	acct_unique
+	suffix
+	files
+}
+
+accounting {
+#	cui
+	detail
+#	daily
+	-sql
+	attr_filter.accounting_response
+}
+
+
+session {
+}
+
+
+post-auth {
+	update {
+		&reply: += &session-state:
+	}
+
+#	cui
+#	reply_log
+	-sql
+#	sql_log
+	remove_reply_message_if_eap
+	Post-Auth-Type REJECT {
+		# log failed authentications in SQL, too.
+		-sql
+		attr_filter.access_reject
+		eap
+		remove_reply_message_if_eap
+	}
+}
+
+pre-proxy {
+}
+
+post-proxy {
+	eap
+}
+}
