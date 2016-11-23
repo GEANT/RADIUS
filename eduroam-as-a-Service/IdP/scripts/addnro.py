@@ -1,27 +1,11 @@
 #!/usr/bin/python
 import sys
-import getopt
 import os
-from shutil import move, copy
+from shutil import move, copy, rmtree
 from subprocess import call
-import dbus
 import ConfigParser
+from sb import check_nros, yn_choice, radius_restart, rm_file, nextport
 
-"""
-   Creates the configuration files for a new NRO and
-   adds them to the RADIUS-TLS configuration.
-   Requires two parameters: a NRO code and port number for
-   virtual server. The port number must be unique.
-   Calls newcert.sh script to create NRO CA and server certificate.
-   This script can be skipped if cerificates are created in an another
-   way. In this case put certificates in the following location:
-   1. NRO CA certificate - scriptsdir/`nro_code`/certs/rootCA.pem
-   2. server certificate - scriptsdir/`nro_code`/certs/nro_code.pem
-   3. server private key - scriptsdir/`nro_code`/private/nro_code.key
-   Puts certificates to the Silverbullet certificates directory and
-   runs c_rehash command in this directory/
-   Finally the RADIUS server is restarted.
-"""
 
 def main(argv):
     """
@@ -46,31 +30,47 @@ def main(argv):
     templ1 = config.get('add_nro', 'templ1')
     templ2 = config.get('add_nro', 'templ2')
     templ3 = config.get('add_nro', 'templ3')
-    try:
-        opts, args = getopt.getopt(argv, "",
-                                   ["help", "nro=", "port="])
-    except getopt.GetoptError:
-        print('addnro.py --nro=nro_code --port=radius_port')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '--help':
-            print('addnro.py --nro=nro_code --port=radius_port')
-            sys.exit(2)
-        elif opt in ("--nro"):
-            nro = arg.lower()
-        elif opt in ("--port"):
-            port = int(arg)
-    if not nro or not port:
-        print('addnro.py --nro=nro_code --port=radius_port')
-        sys.exit(2)
+
+    nro = raw_input("NRO code or quit: ")
+    nro = nro.lower()
+    if nro == 'quit':
+        sys.exit(0)
+    ports = []
+    nros = check_nros()
+    port = 0
+    for key in nros:
+        if key == nro:
+            print 'The NRO', nro, 'is already handled'
+            choice = yn_choice('Do you want to delete this NRO and ' +
+                               'then add a new configuration', 'n')
+            if choice:
+                port = nros[key]['port']
+                rmtree(scriptsdir+nro)
+        else:
+            ports.append(nros[key]['port'])
+
+    if port == 0 and len(ports) > 0:
+        port = nextport(ports)
+    else:
+        if port == 0:
+            port = 5812
     print('nro: ' + nro + ', domain: ' + nro +
           '.hosted.eduroam.org' + ', port:', port)
+    rm_file(sitesadir+nro)
+    rm_file(sitesadir+'check-eap-tls-'+nro)
+    rm_file(sitesedir+nro)
+    rm_file(sitesedir+'check-eap-tls-'+nro)
+    rm_file(modsadir+'eap_'+nro)
+    rm_file(modsedir+'eap_'+nro)
+    rm_file(proxydir+nro+'.conf')
+    rm_file(certdir+nro+'.pem')
+    rm_file(certdir+'CA_'+nro+'.pem')
     """
        newcert.sh script creates NRO CA and NRO virtual server certificate
        certificates are available here:
-       scriptsdir/`nro_code`/certs/rootCA.pem - CA certificate
-       scriptsdir/`nro_code`/servers/`nro_code`.key - server private key
-       scriptsdir/`nro_code`/servers/`nro_code`.pem - server certificate
+       scriptsdir/nro/certs/rootCA.pem - CA certificate
+       scriptsdir/nro/servers/nro.key - server private key
+       scriptsdir/nro/servers/nro.pem - server certificate
     """
     call([scriptsdir+"newcert.sh", nro])
     """
@@ -167,11 +167,7 @@ def main(argv):
         the RADIUS server must be restarted
         to read new configuration
     """
-    sysbus = dbus.SystemBus()
-    systemd1 = sysbus.get_object('org.freedesktop.systemd1',
-                                 '/org/freedesktop/systemd1')
-    manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
-    job = manager.RestartUnit('radiusd.service', 'fail')
+    radius_restart()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
