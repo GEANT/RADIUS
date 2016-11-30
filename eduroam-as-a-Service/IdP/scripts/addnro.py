@@ -27,10 +27,14 @@ def main(argv):
     modsedir = instdir + config.get('add_nro', 'modsedir')
     proxydir = instdir + config.get('add_nro', 'proxydir')
     certdir = instdir + config.get('add_nro', 'certdir')
+    nrosdir = instdir + config.get('add_nro', 'nrosdir')
     templ1 = config.get('add_nro', 'templ1')
     templ2 = config.get('add_nro', 'templ2')
     templ3 = config.get('add_nro', 'templ3')
-
+    nrosdir = config.get('add_nro', 'nrosdir')
+    nrosconfig = config.get('add_nro', 'nrosconfig')
+    nrossecret = config.get('add_nro', 'nrossecret')
+    nrosradius = config.get('add_nro', 'nrosradius')
     nro = raw_input("NRO code or quit: ")
     nro = nro.lower()
     if nro == 'quit':
@@ -46,9 +50,23 @@ def main(argv):
             if choice:
                 port = nros[key]['port']
                 rmtree(scriptsdir+nro)
+            else:
+                sys.exit(0)
         else:
             ports.append(nros[key]['port'])
 
+    good_crldp = None
+    while not good_crldp:
+        crldp = raw_input("CRL Distributon Point or quit: ")
+        crldp = crldp.strip()
+        if crldp == 'quit':
+            sys.exit(0)
+        if crldp.startswith('http://') or crldp.startswith('https://'):
+            while crldp.endswith('/'):
+                crldp = crldp[:-1]
+            crldp = crldp.replace('/', '\/')
+            good_crldp = True
+        print 'CRLDP must start with http:// or https://'
     if port == 0 and len(ports) > 0:
         port = nextport(ports)
     else:
@@ -68,11 +86,11 @@ def main(argv):
     """
        newcert.sh script creates NRO CA and NRO virtual server certificate
        certificates are available here:
-       scriptsdir/nro/certs/rootCA.pem - CA certificate
+       scriptsdir/nro/certs/root.pem - CA certificate
        scriptsdir/nro/servers/nro.key - server private key
        scriptsdir/nro/servers/nro.pem - server certificate
     """
-    call([scriptsdir+"newcert.sh", nro])
+    call([scriptsdir+"newcert.sh", nro, crldp])
     """
         create all config files
     """
@@ -116,6 +134,13 @@ def main(argv):
     """
         move config files to its destination
     """
+    if not os.path.exists(nrosdir + nrosconfig + nro):
+        os.makedirs(nrosdir + nrosconfig + nro)
+    if not os.path.exists(nrosdir + nrossecret + nro):
+        os.makedirs(nrosdir + nrossecret + nro)
+    if not os.path.exists(nrosdir + nrosradius + nro):
+        os.makedirs(nrosdir + nrosradius + nro)
+
     if os.path.isfile(tmpdir + nro) and os.path.isdir(sitesadir):
         """
             new virtual server for NRO
@@ -153,12 +178,24 @@ def main(argv):
            copy certificates to its destination - silverbullet certs dir
         """
         servercertdir = scriptsdir + nro + '/'
-        copy(servercertdir + 'certs/rootCA.pem',
+        copy(servercertdir + 'certs/root.pem',
              certdir + 'CA-' + nro + '.pem')
+        copy(servercertdir + 'certs/root.pem',
+             nrosdir + nrosconfig + nro + '/' + 'root.pem')
+        copy(servercertdir + 'certs/root.pem',
+             nrosdir + nrosconfig + nro + '/' + 'root.pem')
+        copy(servercertdir + 'private/root.key',
+             nrosdir + nrossecret + nro + '/' + 'root.key')
         copy(servercertdir + 'servers/' + nro + '.pem',
              certdir)
+        copy(servercertdir + 'servers/' + nro + '.pem',
+             nrosdir + nrosradius + nro + '/server.pem')
         copy(servercertdir + 'servers/' + nro + '.key',
              certdir)
+        copy(servercertdir + 'servers/' + nro + '.key',
+             nrosdir + nrosradius + nro + '/server.key')
+        copy(servercertdir + 'crl/crl.pem',
+             nrosdir + nrosconfig + nro + '/' + 'root.crl')
         """
             rehash.sh script runs c_rehash command
         """

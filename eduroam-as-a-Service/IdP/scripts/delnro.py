@@ -23,6 +23,10 @@ def main(argv):
     modsedir = instdir + config.get('add_nro', 'modsedir')
     proxydir = instdir + config.get('add_nro', 'proxydir')
     certdir = instdir + config.get('add_nro', 'certdir')
+    nrosdir = config.get('add_nro', 'nrosdir')
+    nrosconfig = config.get('add_nro', 'nrosconfig')
+    nrossecret = config.get('add_nro', 'nrossecret')
+    nrosradius = config.get('add_nro', 'nrosradius')
     nro = raw_input("NRO code or quit: ")
     nro = nro.lower()
     if nro == 'quit':
@@ -46,6 +50,9 @@ def main(argv):
     rm_file(certdir+nro+'.pem')
     rm_file(certdir+'CA_'+nro+'.pem')
     rmtree(scriptsdir+nro)
+    rmtree(nrosdir+nrosconfig+nro)
+    rmtree(nrosdir+nrossecret+nro)
+    rmtree(nrosdir+nrosradius+nro)
     call([scriptsdir+"rehash.sh", certdir])
     radius_restart()
     print nro, 'deleted'

@@ -99,6 +99,8 @@ def nextport(ports):
         returns next port to use by virtual server
     """
     first = 5812
+    if not ports or len(ports) == 0:
+        return first
     last = max(ports)
     p = first
     while p <= last:

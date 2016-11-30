@@ -1,0 +1,1 @@
+Silverbullet config area
