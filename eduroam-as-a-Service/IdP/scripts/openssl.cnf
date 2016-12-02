@@ -31,8 +31,8 @@ policy		= policy_match
 # For the CA policy
 [ policy_match ]
 countryName		= match
-organizationName	= match
-organizationalUnitName	= match
+#organizationName	= match
+#organizationalUnitName	= match
 commonName		= supplied
 emailAddress		= optional
 # For the 'anything' policy
@@ -40,8 +40,8 @@ emailAddress		= optional
 # types.
 [ policy_anything ]
 countryName		= optional
-organizationName	= optional
-organizationalUnitName	= optional
+#organizationName	= optional
+#organizationalUnitName	= optional
 commonName		= supplied
 emailAddress		= optional
 
@@ -61,11 +61,11 @@ countryName_default		= EU
 countryName_min			= 2
 countryName_max			= 2
 
-0.organizationName		= Organization Name (eg, company)
-0.organizationName_default	= GEANT
+#0.organizationName		= Organization Name (eg, company)
+#0.organizationName_default	= GEANT
 
-0.organizationalUnitName		= Organization Name (eg, company)
-0.organizationalUnitName_default	= Silverbullet
+#0.organizationalUnitName		= Organization Name (eg, company)
+#0.organizationalUnitName_default	= Silverbullet
 
 commonName			= Common Name (e.g. server FQDN or YOUR name)
 commonName_max			= 64
@@ -75,9 +75,8 @@ emailAddress_max		= 64
 
 [ v3_ca ]
 
-subjectKeyIdentifier=hash
-
-authorityKeyIdentifier=keyid:always,issuer
-
-basicConstraints = CA:true
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
 #crlDistributionPoints=URI:http://www.supplicants.net/sense1-1.crl

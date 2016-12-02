@@ -7,7 +7,7 @@ TEMPLATES="templates/"
 TEMPLDIR="${SCRIPTDIR}/../${TEMPLATES}"
 NRO="${1,,}"
 CRLDP="${2}"
-CA_NAME="Silverbullet Server ${1^^} CA"
+CA_NAME="eduroam-as-a-service ${1^^} Server CA Root"
 mkdir ${NRO}
 cd $NRO
 mkdir certs crl newcerts  private
@@ -17,25 +17,25 @@ echo $SERIAL> serial
 echo '1000'> crlnumber
 touch index.txt
 echo "unique_subject = no">index.txt.attr
-Country=EU
-Organization=GEANT
-OrganizationalUnit=Silverbullet
+Country="${1^^}"
+#Organization=GEANT
+#OrganizationalUnit=Silverbullet
 Email=" "
 echo $Country > /tmp/cert-data
-echo $Organization >> /tmp/cert-data
-echo $OrganizationalUnit >> /tmp/cert-data
+#echo $Organization >> /tmp/cert-data
+#echo $OrganizationalUnit >> /tmp/cert-data
 echo $CA_NAME >> /tmp/cert-data
 echo $Email >> /tmp/cert-data
 openssl genrsa -out private/root.key $KEYSIZE
 openssl req -x509 -new -nodes -key private/root.key -days 7305 -out ./certs/root.pem -config ../openssl.cnf < /tmp/cert-data
-h="${1,,}.hosted.eduroam.org"
+h="auth.${1,,}.hosted.eduroam.org"
 mkdir servers 
 openssl genrsa -out servers/$NRO.key $KEYSIZE -config ../openssl.cnf
 Host="$h"
 echo $Host
 echo $Country > /tmp/cert-data
-echo $Organization >> /tmp/cert-data
-echo $OrganizationalUnit >> /tmp/cert-data
+#echo $Organization >> /tmp/cert-data
+#echo $OrganizationalUnit >> /tmp/cert-data
 echo $Host >> /tmp/cert-data
 echo $Email >> /tmp/cert-data
 openssl req -new -key servers/$NRO.key -out servers/$NRO.csr -config ../openssl.cnf < /tmp/cert-data

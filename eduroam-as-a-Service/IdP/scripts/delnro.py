@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import os
 from sb import check_nros, yn_choice, rm_file, radius_restart
 import ConfigParser
 from shutil import rmtree
@@ -48,11 +49,16 @@ def main(argv):
     rm_file(modsedir+'eap_'+nro)
     rm_file(proxydir+nro+'.conf')
     rm_file(certdir+nro+'.pem')
-    rm_file(certdir+'CA_'+nro+'.pem')
-    rmtree(scriptsdir+nro)
-    rmtree(nrosdir+nrosconfig+nro)
-    rmtree(nrosdir+nrossecret+nro)
-    rmtree(nrosdir+nrosradius+nro)
+    rm_file(certdir+nro+'.key')
+    rm_file(certdir+'CA-'+nro+'.pem')
+    if os.path.isdir(scriptsdir+nro):
+        rmtree(scriptsdir+nro)
+    if os.path.isdir(nrosdir+nrosconfig+nro.upper()):
+        rmtree(nrosdir+nrosconfig+nro.upper())
+    if os.path.isdir(nrosdir+nrossecret+nro.upper()):
+        rmtree(nrosdir+nrossecret+nro.upper())
+    if os.path.isdir(nrosdir+nrosradius+nro.upper()):
+        rmtree(nrosdir+nrosradius+nro.upper())
     call([scriptsdir+"rehash.sh", certdir])
     radius_restart()
     print nro, 'deleted'

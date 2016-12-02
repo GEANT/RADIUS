@@ -66,7 +66,8 @@ def main(argv):
                 crldp = crldp[:-1]
             crldp = crldp.replace('/', '\/')
             good_crldp = True
-        print 'CRLDP must start with http:// or https://'
+        else:
+            print 'CRLDP must start with http:// or https://'
     if port == 0 and len(ports) > 0:
         port = nextport(ports)
     else:
@@ -82,7 +83,16 @@ def main(argv):
     rm_file(modsedir+'eap_'+nro)
     rm_file(proxydir+nro+'.conf')
     rm_file(certdir+nro+'.pem')
-    rm_file(certdir+'CA_'+nro+'.pem')
+    rm_file(certdir+nro+'.key')
+    rm_file(certdir+'CA-'+nro+'.pem')
+    if os.path.isdir(scriptsdir+nro):
+        rmtree(scriptsdir+nro)
+    if os.path.isdir(nrosdir+nrosconfig+nro.upper()):
+        rmtree(nrosdir+nrosconfig+nro.upper())
+    if os.path.isdir(nrosdir+nrossecret+nro.upper()):
+        rmtree(nrosdir+nrossecret+nro.upper())
+    if os.path.isdir(nrosdir+nrosradius+nro.upper()):
+        rmtree(nrosdir+nrosradius+nro.upper())
     """
        newcert.sh script creates NRO CA and NRO virtual server certificate
        certificates are available here:
@@ -134,12 +144,12 @@ def main(argv):
     """
         move config files to its destination
     """
-    if not os.path.exists(nrosdir + nrosconfig + nro):
-        os.makedirs(nrosdir + nrosconfig + nro)
-    if not os.path.exists(nrosdir + nrossecret + nro):
-        os.makedirs(nrosdir + nrossecret + nro)
-    if not os.path.exists(nrosdir + nrosradius + nro):
-        os.makedirs(nrosdir + nrosradius + nro)
+    if not os.path.exists(nrosdir + nrosconfig + nro.upper()):
+        os.makedirs(nrosdir + nrosconfig + nro.upper())
+    if not os.path.exists(nrosdir + nrossecret + nro.upper()):
+        os.makedirs(nrosdir + nrossecret + nro.upper())
+    if not os.path.exists(nrosdir + nrosradius + nro.upper()):
+        os.makedirs(nrosdir + nrosradius + nro.upper())
 
     if os.path.isfile(tmpdir + nro) and os.path.isdir(sitesadir):
         """
@@ -181,21 +191,21 @@ def main(argv):
         copy(servercertdir + 'certs/root.pem',
              certdir + 'CA-' + nro + '.pem')
         copy(servercertdir + 'certs/root.pem',
-             nrosdir + nrosconfig + nro + '/' + 'root.pem')
+             nrosdir + nrosconfig + nro.upper() + '/' + 'root.pem')
         copy(servercertdir + 'certs/root.pem',
-             nrosdir + nrosconfig + nro + '/' + 'root.pem')
+             nrosdir + nrosconfig + nro.upper() + '/' + 'root.pem')
         copy(servercertdir + 'private/root.key',
-             nrosdir + nrossecret + nro + '/' + 'root.key')
+             nrosdir + nrossecret + nro.upper() + '/' + 'root.key')
         copy(servercertdir + 'servers/' + nro + '.pem',
              certdir)
         copy(servercertdir + 'servers/' + nro + '.pem',
-             nrosdir + nrosradius + nro + '/server.pem')
+             nrosdir + nrosradius + nro.upper() + '/server.pem')
         copy(servercertdir + 'servers/' + nro + '.key',
              certdir)
         copy(servercertdir + 'servers/' + nro + '.key',
-             nrosdir + nrosradius + nro + '/server.key')
+             nrosdir + nrosradius + nro.upper() + '/server.key')
         copy(servercertdir + 'crl/crl.pem',
-             nrosdir + nrosconfig + nro + '/' + 'root.crl')
+             nrosdir + nrosconfig + nro.upper() + '/' + 'root.crl')
         """
             rehash.sh script runs c_rehash command
         """
