@@ -1,5 +1,6 @@
 #!/bin/bash
 # newcert.sh nro crldp
+CALIFE=18262
 KEYSIZE=4096
 SCRIPTDIR=`dirname $0`
 cd $SCRIPTDIR
@@ -27,7 +28,7 @@ echo $Country > /tmp/cert-data
 echo $CA_NAME >> /tmp/cert-data
 echo $Email >> /tmp/cert-data
 openssl genrsa -out private/root.key $KEYSIZE
-openssl req -x509 -new -nodes -key private/root.key -days 7305 -out ./certs/root.pem -config ../openssl.cnf < /tmp/cert-data
+openssl req -x509 -new -nodes -key private/root.key -days $CALIFE -out ./certs/root.pem -config ../openssl.cnf < /tmp/cert-data
 h="auth.${1,,}.hosted.eduroam.org"
 mkdir servers 
 openssl genrsa -out servers/$NRO.key $KEYSIZE -config ../openssl.cnf
