@@ -48,9 +48,8 @@ def main(argv):
     rm_file(modsadir+'eap_'+nro)
     rm_file(modsedir+'eap_'+nro)
     rm_file(proxydir+nro+'.conf')
-    rm_file(certdir+nro+'.pem')
-    rm_file(certdir+nro+'.key')
-    rm_file(certdir+'CA-'+nro+'.pem')
+    if os.path.isdir(certdir+nro.upper()):
+        rmtree(certdir+nro.upper())
     if os.path.isdir(scriptsdir+nro):
         rmtree(scriptsdir+nro)
     if os.path.isdir(nrosdir+nrosconfig+nro.upper()):
@@ -59,7 +58,6 @@ def main(argv):
         rmtree(nrosdir+nrossecret+nro.upper())
     if os.path.isdir(nrosdir+nrosradius+nro.upper()):
         rmtree(nrosdir+nrosradius+nro.upper())
-    call([scriptsdir+"rehash.sh", certdir])
     radius_restart()
     print nro, 'deleted'
 

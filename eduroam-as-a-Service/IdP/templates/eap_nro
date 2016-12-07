@@ -7,9 +7,9 @@ eap eap_%(nro)s{
 	# Supported EAP-types
 
 	tls-config tls-common {
-		private_key_file = ${certdir}/silverbullet/%(nro)s.key
-		certificate_file = ${certdir}/silverbullet/%(nro)s.pem
-		ca_path = ${cadir}/silverbullet/
+		private_key_file = ${certdir}/silverbullet/%(bignro)s/%(nro)s.key
+		certificate_file = ${certdir}/silverbullet/%(bignro)s/%(nro)s.pem
+		ca_path = ${cadir}/silverbullet/%(bignro)s/
 	#	auto_chain = yes
 		dh_file = ${certdir}/dh
 	#	random_file = /dev/urandom
