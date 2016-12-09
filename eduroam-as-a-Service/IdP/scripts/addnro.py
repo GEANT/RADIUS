@@ -36,6 +36,7 @@ def main(argv):
     nrossecret = config.get('add_nro', 'nrossecret')
     nrosradius = config.get('add_nro', 'nrosradius')
     userca = config.get('add_nro', 'userca')
+    issuingca = config.get('add_nro', 'issuingca')
     try:
         if sys.argv[1]:
             args = True
@@ -241,6 +242,7 @@ def main(argv):
             copy(servercertdir + 'crl/crl.pem',
                  nrosdir + nrosconfig + nro.upper() + '/' + 'root.crl')
             copy(templdir + userca, certdir + nro.upper())
+            copy(templdir + issuingca, certdir + nro.upper())
         """
             rehash.sh script runs c_rehash command
         """
