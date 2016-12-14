@@ -4,7 +4,7 @@ import os
 from shutil import move, copy, rmtree
 from subprocess import call
 import ConfigParser
-from sb import check_nros, yn_choice, radius_restart, rm_file, nextport
+from sb import check_nros, yn_choice, radius_restart, rm_file
 
 
 def main(argv):
@@ -18,7 +18,6 @@ def main(argv):
     config = ConfigParser.ConfigParser()
     config.readfp(open(configfile))
     nro = False
-    port = False
     templdir = instdir + config.get('add_nro', 'templdir')
     tmpdir = instdir + config.get('add_nro', 'tmpdir')
     sitesadir = instdir + config.get('add_nro', 'sitesadir')
@@ -31,6 +30,9 @@ def main(argv):
     templ1 = config.get('add_nro', 'templ1')
     templ2 = config.get('add_nro', 'templ2')
     templ3 = config.get('add_nro', 'templ3')
+    templ4 = config.get('add_nro', 'templ4')
+    eapautzdir = instdir + config.get('add_nro', 'eapautzdir')
+    eapauthdir = instdir + config.get('add_nro', 'eapauthdir')
     nrosdir = config.get('add_nro', 'nrosdir')
     nrosconfig = config.get('add_nro', 'nrosconfig')
     nrossecret = config.get('add_nro', 'nrossecret')
@@ -52,17 +54,11 @@ def main(argv):
                 args = False
     except:
         args = False
-    nros = check_nros()
-    ports = []
-    port = 0
     if args:
         cnt = len(rows)-1
     else:
-        print 'interactivly'
         cnt = 0
     while cnt >= 0:
-        print cnt
-        print args
         if not args:
             nro = raw_input("NRO code or quit: ")
             nro = nro.lower()
@@ -71,18 +67,20 @@ def main(argv):
         else:
             el = rows[cnt].split()
             nro = el[0].lower()
+        nros = check_nros()
+        if args and nro in nros:
+            cnt = cnt - 1
+            print nro, 'skipped'
+            continue
         for key in nros:
             if key == nro:
                 print 'The NRO', nro, 'is already handled'
                 choice = yn_choice('Do you want to delete this NRO and ' +
                                    'then add a new configuration', 'n')
                 if choice:
-                    port = nros[key]['port']
                     rmtree(scriptsdir+nro)
                 else:
                     sys.exit(0)
-            else:
-                ports.append(nros[key]['port'])
 
         good_crldp = None
         clrdp = None
@@ -102,20 +100,14 @@ def main(argv):
             crldp = crldp[:-1]
         crldp = crldp.replace('/', '\/')
         cnt = cnt - 1
-        if port == 0 and len(ports) > 0:
-            port = nextport(ports)
-        else:
-            if port == 0:
-                port = 5812
         print('nro: ' + nro + ', domain: ' + nro +
-              '.hosted.eduroam.org' + ', port:', port)
-        rm_file(sitesadir+nro)
+              '.hosted.eduroam.org')
         rm_file(sitesadir+'check-eap-tls-'+nro)
-        rm_file(sitesedir+nro)
         rm_file(sitesedir+'check-eap-tls-'+nro)
         rm_file(modsadir+'eap_'+nro)
         rm_file(modsedir+'eap_'+nro)
-        rm_file(proxydir+nro+'.conf')
+        rm_file(eapautzdir+'eap_'+nro)
+        rm_file(eapauthdir+'eap_'+nro)
         if os.path.isdir(certdir+nro.upper()):
             rmtree(certdir+nro.upper())
         if os.path.isdir(scriptsdir+nro):
@@ -139,20 +131,20 @@ def main(argv):
         """
         realm = nro + '.hosted.eduroam.org'
         esc_realm = realm.replace('.', '\\.')
-        port2 = port + 1
         lines = []
-        f = open(templdir+templ1, 'r')
+        lines = []
+        f = open(templdir + templ1 + 'nro', 'r')
         for line in f:
             lines.append(line % {'nro': nro, 'escaped_realm': esc_realm,
-                                 'port_auth': port, 'port_acct': port2})
+                                 'proc': '%'})
         f.close()
-        f = open(tmpdir+nro, 'w')
+        f = open(tmpdir + templ1 + nro, 'w')
         f.write(''.join(lines))
         f.close()
         lines = []
         f = open(templdir + templ2 + 'nro', 'r')
         for line in f:
-            lines.append(line % {'nro': nro, 'escaped_realm': esc_realm,
+            lines.append(line % {'nro': nro, 'bignro': nro.upper(),
                                  'proc': '%'})
         f.close()
         f = open(tmpdir + templ2 + nro, 'w')
@@ -161,12 +153,20 @@ def main(argv):
         lines = []
         f = open(templdir + templ3 + 'nro', 'r')
         for line in f:
-            lines.append(line % {'nro': nro, 'bignro': nro.upper(),
-                                 'proc': '%'})
+            lines.append(line % {'nro': nro})
         f.close()
         f = open(tmpdir + templ3 + nro, 'w')
         f.write(''.join(lines))
         f.close()
+        lines = []
+        f = open(templdir + templ4 + 'nro', 'r')
+        for line in f:
+            lines.append(line % {'nro': nro})
+        f.close()
+        f = open(tmpdir + templ4 + nro, 'w')
+        f.write(''.join(lines))
+        f.close()
+        lines = []
         lines = []
         f = open(templdir + 'nro.conf', 'r')
         for line in f:
@@ -185,38 +185,39 @@ def main(argv):
         if not os.path.exists(nrosdir + nrosradius + nro.upper()):
             os.makedirs(nrosdir + nrosradius + nro.upper())
 
-        if os.path.isfile(tmpdir + nro) and os.path.isdir(sitesadir):
-            """
-                new virtual server for NRO
-            """
-            move(tmpdir + nro, sitesadir)
-            """
-                enable new virtual server
-            """
-            os.symlink(sitesadir + nro, sitesedir + nro)
-        if os.path.isfile(tmpdir + templ2 + nro) and os.path.isdir(sitesadir):
+        if os.path.isfile(tmpdir + templ1 + nro) and os.path.isdir(sitesadir):
             """
                 check-eap-tls for NRO
             """
-            move(tmpdir + templ2 + nro, sitesadir)
+            move(tmpdir + templ1 + nro, sitesadir)
             """
                 enable check-eap-tls for NRO
             """
-            os.symlink(sitesadir + templ2 + nro, sitesedir + templ2 + nro)
-        if os.path.isfile(tmpdir + templ3 + nro) and os.path.isdir(modsadir):
+            os.symlink(sitesadir + templ1 + nro, sitesedir + templ1 + nro)
+        if os.path.isfile(tmpdir + templ2 + nro) and os.path.isdir(modsadir):
             """
                 eap config for NRO
             """
-            move(tmpdir + templ3 + nro, modsadir)
+            move(tmpdir + templ2 + nro, modsadir)
             """
                 enable eap config for NRO
             """
-            os.symlink(modsadir + templ3 + nro, modsedir + templ3 + nro)
+            os.symlink(modsadir + templ2 + nro, modsedir + templ2 + nro)
         if os.path.isfile(tmpdir + nro + '.conf') and os.path.isdir(proxydir):
             """
                 proxy config for NRO
             """
             move(tmpdir+nro+'.conf', proxydir)
+        if os.path.isfile(tmpdir + templ3 + nro) and os.path.isdir(eapautzdir):
+            """
+                eap in authorization section for NRO
+            """
+            move(tmpdir+templ3+nro, eapautzdir + 'eap_' + nro)
+        if os.path.isfile(tmpdir + templ4 + nro) and os.path.isdir(eapauthdir):
+            """
+                eap in authenticate section for NRO
+            """
+            move(tmpdir+templ4+nro, eapauthdir + 'eap_' + nro)
         if os.path.isdir(scriptsdir + nro):
             os.makedirs(certdir + nro.upper())
             """

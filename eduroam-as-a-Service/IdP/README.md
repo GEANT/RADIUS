@@ -9,6 +9,5 @@ Remove default and inner-tunnel from sites-enabled
 Copy scripts and templates subdirectory to the RADIUS-TLS installation directory.
 
 TODO
-handling NROs that want to have its own RADIUS server
 OCSP - configuration and tests
 

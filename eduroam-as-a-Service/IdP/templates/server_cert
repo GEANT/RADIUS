@@ -1,7 +1,7 @@
 [ server_cert ]
 extendedKeyUsage = clientAuth,serverAuth
 #subjectAltName=critical,subject:copy
-crlDistributionPoints=URI:http://www.supplicants.net/SSSS.crl
+crlDistributionPoints=URI:CRLDP/NRO.crl
 basicConstraints=critical,CA:FALSE
 keyUsage=critical,Digital Signature,Key Encipherment
 subjectAltName = @alt_names

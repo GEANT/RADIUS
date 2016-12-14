@@ -1,0 +1,5 @@
+if (Realm =~ /.*\.%(nro)s\.hosted\.eduroam\.org/) {
+  eap_%(nro)s {
+    ok = return
+ }
+}

@@ -21,35 +21,6 @@ def yn_choice(msg, default='y'):
     return choice.strip().lower() in values
 
 
-def listen_auth_port(f):
-    try:
-        with open(f, "r") as fp:
-            listenblock = 0
-            openbrackets = 0
-            closebrackets = 0
-
-            for line in fp.readlines():
-                openbrackets = openbrackets + len(re.findall('{', line))
-                closebrackets = closebrackets + len(re.findall('}', line))
-                line = line.strip().replace(' ', '')
-                if line == 'listen{':
-                    listenblock = openbrackets
-                    authlistenblock = False
-                    port = 0
-                if listenblock > 0 and line == 'type=auth':
-                    authlistenblock = True
-                if listenblock > 0 and line.startswith('port='):
-                    port = int(line.replace('port=', ''))
-
-                if listenblock and openbrackets == closebrackets + 1:
-                    if authlistenblock:
-                        return port
-                    listenblock = False
-        return None
-    except:
-        return None
-
-
 def check_nros():
     """
         define the RADIUS instalation path here
@@ -79,8 +50,7 @@ def check_nros():
                 os.path.isfile(certdir+name+'.pem') and \
                 os.path.isfile(certdir+'CA-'+name+'.pem'):
             nrotype = 'local'
-        authport = listen_auth_port(sitesedir+name)
-        nros[name] = {'port': authport, 'status': True}
+        nros[name] = {'status': True}
     return nros
 
 
@@ -92,19 +62,3 @@ def rm_file(f):
         os.remove(f)
     except:
         pass
-
-
-def nextport(ports):
-    """
-        returns next port to use by virtual server
-    """
-    first = 5812
-    if not ports or len(ports) == 0:
-        return first
-    last = max(ports)
-    p = first
-    while p <= last:
-        if p not in ports:
-            return p
-        p = p + 3
-    return p+3

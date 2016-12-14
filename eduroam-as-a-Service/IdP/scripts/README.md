@@ -5,7 +5,9 @@ The main tool - addnro.py script creates the configuration files
 for a new NRO and adds them to the RADIUS-TLS configuration.
 The script is interactive. It prompts for the NRO code.
 When this NRO already exists it can be replaced by a new instance.
-The port for virtual server of the new NRO is acquired automatically.
+It can be called wit a file as the first argument - then it is assumed
+that this file contains data for bulk loading in the following format:
+NRO_code CRL_Distribution_Point_URL 
 
 The addnro.py calls newcert.sh script to create NRO CA and server certificate.
 This call can be skipped if cerificates are created in an another
@@ -22,7 +24,8 @@ To add a new NRO run e.g.
 /opt/tls/scripts/addnro.py --nro=pl --port=5812
 
 The delnro.py script allows to remove a NRO wrom the RADIS-TLS configuration.
-It prompts for the NRO code.
+It prompts for the NRO code or can be calld with a file as the first argument to
+do bulk deleting. The file contains NRO codes (one per line).
 
 The shownro.py script lists configured NROs and its RADIUS-TLS ports.
 

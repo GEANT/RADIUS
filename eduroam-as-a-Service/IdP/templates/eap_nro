@@ -18,7 +18,7 @@ eap eap_%(nro)s{
 	#	check_crl = yes
 	#	check_all_crl = yes
 	#	check_cert_issuer = "/C=GB/ST=Berkshire/L=Newbury/O=My Company Ltd"
-	#	check_cert_cn = %(proc)s{User-Name}
+		check_cert_cn = %(proc)s{User-Name}
 		cipher_list = "DEFAULT"
 #		disable_tlsv1_2 = no
 		ecdh_curve = "prime256v1"
