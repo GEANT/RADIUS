@@ -38,7 +38,8 @@ def main(argv):
     nrossecret = config.get('add_nro', 'nrossecret')
     nrosradius = config.get('add_nro', 'nrosradius')
     userca = config.get('add_nro', 'userca')
-    issuingca = config.get('add_nro', 'issuingca')
+    issuingca1 = config.get('add_nro', 'issuingca1')
+    issuingca2 = config.get('add_nro', 'issuingca2')
     try:
         if sys.argv[1]:
             args = True
@@ -72,16 +73,23 @@ def main(argv):
             cnt = cnt - 1
             print nro, 'skipped'
             continue
+        isca = '0'
         for key in nros:
             if key == nro:
                 print 'The NRO', nro, 'is already handled'
-                choice = yn_choice('Do you want to delete this NRO and ' +
-                                   'then add a new configuration', 'n')
+                choice = yn_choice('Do you want to delete this NRO ' +
+                                   'and its server CA and then create ' +
+                                   'a new CA and new configuration', 'n')
                 if choice:
                     rmtree(scriptsdir+nro)
                 else:
-                    sys.exit(0)
-
+                    choice = yn_choice('Do you want to create ' +
+                                       'the new server certificate ' +
+                                       'for this NRO', 'n')
+                    if choice:
+                        isca = '1'
+                    else:
+                        sys.exit(0)
         good_crldp = None
         clrdp = None
         if args:
@@ -110,7 +118,7 @@ def main(argv):
         rm_file(eapauthdir+'eap_'+nro)
         if os.path.isdir(certdir+nro.upper()):
             rmtree(certdir+nro.upper())
-        if os.path.isdir(scriptsdir+nro):
+        if isca == 0 and os.path.isdir(scriptsdir+nro):
             rmtree(scriptsdir+nro)
         if os.path.isdir(nrosdir+nrosconfig+nro.upper()):
             rmtree(nrosdir+nrosconfig+nro.upper())
@@ -125,7 +133,7 @@ def main(argv):
            scriptsdir/nro/servers/nro.key - server private key
            scriptsdir/nro/servers/nro.pem - server certificate
         """
-        call([scriptsdir+"newcert.sh", nro, crldp])
+        call([scriptsdir+"newcert.sh", nro, crldp, isca])
         """
             create all config files
         """
@@ -189,7 +197,7 @@ def main(argv):
             """
                 check-eap-tls for NRO
             """
-            move(tmpdir + templ1 + nro, sitesadir)
+            move(tmpdir + templ1 + nro, sitesadir + templ1 + nro)
             """
                 enable check-eap-tls for NRO
             """
@@ -198,7 +206,7 @@ def main(argv):
             """
                 eap config for NRO
             """
-            move(tmpdir + templ2 + nro, modsadir)
+            move(tmpdir + templ2 + nro, modsadir + templ2 + nro)
             """
                 enable eap config for NRO
             """
@@ -207,7 +215,7 @@ def main(argv):
             """
                 proxy config for NRO
             """
-            move(tmpdir+nro+'.conf', proxydir)
+            move(tmpdir + nro + '.conf', proxydir + nro + '.conf')
         if os.path.isfile(tmpdir + templ3 + nro) and os.path.isdir(eapautzdir):
             """
                 eap in authorization section for NRO
@@ -225,8 +233,6 @@ def main(argv):
             """
             servercertdir = scriptsdir + nro + '/'
             copy(servercertdir + 'certs/root.pem',
-                 certdir + nro.upper() + '/' + 'CA-' + nro + '.pem')
-            copy(servercertdir + 'certs/root.pem',
                  nrosdir + nrosconfig + nro.upper() + '/' + 'root.pem')
             copy(servercertdir + 'certs/root.pem',
                  nrosdir + nrosconfig + nro.upper() + '/' + 'root.pem')
@@ -243,7 +249,8 @@ def main(argv):
             copy(servercertdir + 'crl/crl.pem',
                  nrosdir + nrosconfig + nro.upper() + '/' + 'root.crl')
             copy(templdir + userca, certdir + nro.upper())
-            copy(templdir + issuingca, certdir + nro.upper())
+            copy(templdir + issuingca1, certdir + nro.upper())
+            copy(templdir + issuingca2, certdir + nro.upper())
         """
             rehash.sh script runs c_rehash command
         """
