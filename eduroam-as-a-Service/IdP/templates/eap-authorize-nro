@@ -1,4 +1,4 @@
-if (Realm =~ /.*\.%(nro)s\.hosted\.eduroam\.org/) {
+if (Realm =~ /.*\.%(nro)s\.test\.hosted\.eduroam\.org/) {
   eap_%(nro)s {
     ok = return
  }
