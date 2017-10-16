@@ -17,12 +17,12 @@ The script can be called in two ways:
 NRO_code CRL_Distribution_Point_URL 
 ```
 
-The addnro.py calls **newcert.sh** script to create NRO CA and server certificate.
+The **addnro.py** calls **newcert.sh** script to create NRO CA and server certificate.
 This call can be skipped if cerificates are created in an another
 way. In this case put certificates in the following location:
 1. NRO CA certificate - `scriptsdir`/`nro_code`/certs/rootCA.pem
 2. server certificate - `scriptsdir`/`nro_code`/certs/nro_code.pem
-3. server private key - `scriptsdir/`nro_code`/private/nro_code.key
+3. server private key - `scriptsdir`/`nro_code`/private/nro_code.key
 
 New certificates are copied to the Silverbullet certificates directory and
 then c_rehash command is run in this directory.
