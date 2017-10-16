@@ -3,7 +3,7 @@
 This directory contains scripts used to create the RADIUS-TLS configuration
 for a new NRO.
 
-####addnro.py script
+#### addnro.py script
 This script creates the configuration files 
 for a new NRO and adds them to the RADIUS-TLS configuration.
 The script can be called in two ways:
