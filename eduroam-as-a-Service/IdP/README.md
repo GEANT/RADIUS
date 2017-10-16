@@ -10,7 +10,7 @@ This directory contains config files for RADIUS-TLS.
 
 Copy files from **etc/raddb** subdirectory to the RADIUS-TLS configuration.
 
-Remove *default* and *inner-tunnel* from *etc/raddb/sites-enabled*
+Go to the FreeRADIUS installation tree and remove *default* and *inner-tunnel* from *etc/raddb/sites-enabled*.
 
 Copy **scripts** and **templates** subdirectory to the RADIUS-TLS installation directory.
 
