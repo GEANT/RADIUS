@@ -24,18 +24,29 @@ way. In this case put certificates in the following location:
 2. server certificate - `scriptsdir`/`nro_code`/certs/nro_code.pem
 3. server private key - `scriptsdir`/`nro_code`/private/nro_code.key
 
-New certificates are copied to the Silverbullet certificates directory and
-then c_rehash command is run in this directory.
-Finally the RADIUS server is restarted.
+New certificates are copied to the Silverbullet certificates directory and the RADIUS server is restarted.
 
 To add a new NRO run e.g.
 
-/opt/tls/scripts/addnro.py --nro=pl --port=5812
+```
+/opt/tls/scripts/addnro.py --nro=pl 
+```
 
-The delnro.py script allows to remove a NRO wrom the RADIS-TLS configuration.
-It prompts for the NRO code or can be calld with a file as the first argument to
+#### newcert.sh 
+
+This script setups a new NRO CA and issues a server certificate for this NRO.
+It is bash script, it calls ``openssl`` command.
+
+#### delnro.py
+
+The **delnro.py** script allows to remove a NRO from the RADIS-TLS configuration.
+It prompts for the NRO code or can be called with a file as the first argument to
 do bulk deleting. The file contains NRO codes (one per line).
 
-The shownro.py script lists configured NROs and its RADIUS-TLS ports.
+#### shownro.py
 
-The sb.py contains functions used by scripts described above.
+The **shownro.py** script lists configured NROs.
+
+#### sb.py
+
+The **sb.py** contains functions used by scripts described above.
