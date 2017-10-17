@@ -37,9 +37,6 @@ def main(argv):
     nrosconfig = config.get('add_nro', 'nrosconfig')
     nrossecret = config.get('add_nro', 'nrossecret')
     nrosradius = config.get('add_nro', 'nrosradius')
-    userca = config.get('add_nro', 'userca')
-    issuingca1 = config.get('add_nro', 'issuingca1')
-    issuingca2 = config.get('add_nro', 'issuingca2')
     try:
         if sys.argv[1]:
             args = True
@@ -128,10 +125,15 @@ def main(argv):
             rmtree(nrosdir+nrosradius+nro.upper())
         """
            newcert.sh script creates NRO CA and NRO virtual server certificate
-           certificates are available here:
+
+           when created certificates are available here:
            scriptsdir/nro/certs/root.pem - CA certificate
            scriptsdir/nro/servers/nro.key - server private key
            scriptsdir/nro/servers/nro.pem - server certificate
+
+           If you already have server certificate place credentials in the
+           appropriate files (as indicated above) and comment out 
+           following call.
         """
         call([scriptsdir+"newcert.sh", nro, crldp, isca])
         """
@@ -234,8 +236,6 @@ def main(argv):
             servercertdir = scriptsdir + nro + '/'
             copy(servercertdir + 'certs/root.pem',
                  nrosdir + nrosconfig + nro.upper() + '/' + 'root.pem')
-            copy(servercertdir + 'certs/root.pem',
-                 nrosdir + nrosconfig + nro.upper() + '/' + 'root.pem')
             copy(servercertdir + 'private/root.key',
                  nrosdir + nrossecret + nro.upper() + '/' + 'root.key')
             copy(servercertdir + 'servers/' + nro + '.pem',
@@ -248,13 +248,6 @@ def main(argv):
                  nrosdir + nrosradius + nro.upper() + '/server.key')
             copy(servercertdir + 'crl/crl.pem',
                  nrosdir + nrosconfig + nro.upper() + '/' + 'root.crl')
-            copy(templdir + userca, certdir + nro.upper())
-            copy(templdir + issuingca1, certdir + nro.upper())
-            copy(templdir + issuingca2, certdir + nro.upper())
-        """
-            rehash.sh script runs c_rehash command
-        """
-        call([scriptsdir+"rehash.sh", certdir + nro.upper()])
     """
         the RADIUS server must be restarted
         to read new configuration
