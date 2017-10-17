@@ -26,10 +26,10 @@ way. In this case put certificates in the following location:
 
 New certificates are copied to the Silverbullet certificates directory and the RADIUS server is restarted.
 
-To add a new NRO run e.g.
+To add a new NRO run 
 
 ```
-/opt/tls/scripts/addnro.py --nro=pl 
+/opt/tls/scripts/addnro.py 
 ```
 
 #### newcert.sh 
