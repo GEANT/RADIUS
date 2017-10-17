@@ -13,7 +13,7 @@ eap eap_%(nro)s{
 	#	auto_chain = yes
 		dh_file = ${certdir}/dh
 	#	random_file = /dev/urandom
-	#	fragment_size = 1024
+		fragment_size = 1200
 	#	include_length = yes
 	#	check_crl = yes
 	#	check_all_crl = yes
@@ -24,7 +24,7 @@ eap eap_%(nro)s{
 		ecdh_curve = "prime256v1"
 		cache {
 			enable = yes
-			lifetime = 24 # hours
+			lifetime = 1 # hours
 			max_entries = 255
 		}
 		verify {
@@ -34,9 +34,11 @@ eap eap_%(nro)s{
 		}
 
 		ocsp {
-			enable = no
-			override_cert_url = yes
-			url = "http://127.0.0.1/ocsp/"
+			use_nonce = no
+			enable = yes
+			timeout = 2
+			softfail = yes
+			override_cert_url = no
 		}
 	}
 
