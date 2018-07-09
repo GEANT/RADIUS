@@ -37,16 +37,12 @@ echo "##############"
 
 openssl=$(which openssl)
 version=$($openssl version)
-cascript=./settings/CA.pl
-cnfpath=./settings/openssl.cnf
 # when using the hardware random number generator on a Raspberry Pi, 
 # change the file name to /dev/hwrng
 randomsource=/dev/urandom
 
 echo "openSSL path   : $openssl"
 echo "openSSL version: $version"
-echo "openSSL config : $cnfpath"
-echo "openSSL CA.pl  : $cascript"
 
 echo -n "Generating random source file ... "
 
@@ -68,9 +64,9 @@ echo -e ""
 echo -e "\t\t##################"
 echo -e "\t\tcreating private key and cert request"
 echo -e "\t\t##################\n"
-$openssl ecparam -name secp521 >ec-521.param
-$openssl req -config $cnfpath -new -newkey rsa:4096 -sha512 -x509 -keyout newreq.pem -out newreq.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD
-$openssl req -config $cnfpath -new -newkey ec:ec-521.param -ecdsa-with-sha1 -x509 -keyout newreq-ecdsa.pem -out newreq-ecsda.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl ecparam -name secp521r1 >ec-521.param
+$openssl req -config ./settings/openssl-rsa.cnf -new -newkey rsa:4096 -sha512 -x509 -keyout newreq.pem -out newreq.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-ecdsa.cnf -new -newkey ec:ec-521.param -sha512 -x509 -keyout newreq-ecdsa.pem -out newreq-ecdsa.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD
 
 echo -e ""
 echo -e "\t\t##################"
@@ -78,6 +74,12 @@ echo -e "\t\tcreate RSA CA by self-signing request"
 echo -e "\t\t##################\n"
 
 echo "newreq.pem" | ./settings/CA-RSA.pl -newca
+
+echo -e ""
+echo -e "\t\t##################"
+echo -e "\t\tcreate ECDSA CA by self-signing request"
+echo -e "\t\t##################\n"
+
 echo "newreq-ecdsa.pem" | ./settings/CA-ECDSA.pl -newca
 
 echo -e ""
@@ -96,7 +98,4 @@ mv newreq-ecdsa.pem ROOT-ECDSA/private/
 
 dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-RSA/serial
 dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-ECDSA/serial
-
-mkdir ROOT-RSA/OCSP
-mkdir ROOT-ECDSA/OCSP
 

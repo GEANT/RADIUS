@@ -8,7 +8,7 @@ default_ca	= CA_default		# The default ca section
 ####################################################################
 [ CA_default ]
 
-dir		= ./ROOT-CA		# Where everything is kept for the purposed of the Eduroam CA.all
+dir		= ./ROOT-ECDSA		# Where everything is kept for the purposed of the Eduroam CA.all
 certs		= $dir/certs		# Where the issued certs are kept
 crl_dir		= $dir/crl		# Where the issued crl are kept
 database	= $dir/index.txt	# database index file.
