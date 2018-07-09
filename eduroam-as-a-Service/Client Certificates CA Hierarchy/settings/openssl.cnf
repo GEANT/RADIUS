@@ -77,10 +77,10 @@ string_mask = MASK:0x2002
 0.organizationName_default	= eduroam
 
 organizationalUnitName		= Organizational Unit Name (eg, section)
-organizationalUnitName_default	= eduroam-as-a-Service
+organizationalUnitName_default	= eduroam Managed IdP
 
 commonName			= Common Name
-commonName_default              = eduroam-as-a-Service Client Auth Root CA - Prototype
+commonName_default              = eduroam Managed IdP Client Auth Root CA G1
 commonName_max			= 64
 
 [ req_attributes ]
@@ -103,12 +103,12 @@ keyUsage = critical, cRLSign, keyCertSign, digitalSignature
 
 authorityInfoAccess = @ocsp_info
 
-crlDistributionPoints=URI:http://ticker.eduroam.lu/rootca/crl.der
+crlDistributionPoints=URI:http://ocsp.hosted.eduroam.org/rootca/crl.der
 
 [ocsp_info]
 
-caIssuers;URI.0         = http://ticker.eduroam.lu/rootca/cert.crt
-OCSP;URI.0              = http://ticker.eduroam.lu/rootca/ocsp
+caIssuers;URI.0         = http://ocsp.hosted.eduroam.org/rootca/cert.crt
+OCSP;URI.0              = http://ocsp.hosted.eduroam.org/rootca/ocsp
 
 [ crl_ext ]
 
