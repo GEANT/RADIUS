@@ -23,7 +23,10 @@ echo "Ready to issue new CRL..."
 echo "-------------------------"
 echo ""
 
-$openssl ca -gencrl -keyfile ROOT-CA/private/cakey.pem -cert ROOT-CA/cacert.pem -config ./settings/openssl.cnf -crldays 365 -out ROOT-CA/crl.pem
-$openssl crl -in ROOT-CA/crl.pem -outform DER -out ROOT-CA/crl.der
+$openssl ca -gencrl -keyfile ROOT-RSA/private/cakey.pem -cert ROOT-RSA/cacert.pem -config ./settings/openssl-rsa.cnf -crldays 20000 -out ROOT-RSA/crl.pem
+$openssl crl -in ROOT-RSA/crl.pem -outform DER -out ROOT-RSA/crl.der
 
-echo -e "\n\t\tDone. The new CRL is in ROOT-CA/crl.pem and ROOT-CA/crl.der\n\n"
+$openssl ca -gencrl -keyfile ROOT-ECDSA/private/cakey.pem -cert ROOT-ECDSA/cacert.pem -config ./settings/openssl-ecdsa.cnf -crldays 20000 -out ROOT-ECDSA/crl.pem
+$openssl crl -in ROOT-ECDSA/crl.pem -outform DER -out ROOT-ECDSA/crl.der
+
+echo -e "\n\t\tDone. The new CRL is in crl.pem and crl.der\n\n"
