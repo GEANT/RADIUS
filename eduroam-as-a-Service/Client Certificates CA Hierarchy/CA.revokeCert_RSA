@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#################################################################
+#                                                               #
+#       Written by Stefan Winter, stefan.winter@restena.lu      #
+#                                                               #
+#################################################################
+#                                                               #
+#       Please send bug reports to stefan.winter@restena.lu     #
+#                                                               #
+#################################################################
+
+echo ""
+echo "eduroam-as-a-Service CA Operation - Revocation"
+echo "=============================================="
+
+openssl=$(which openssl)
+version=$($openssl version)
+cnfpath="./settings/"
+
+echo ""
+echo "Ready to revoke a certificate..."
+echo "--------------------------------"
+echo ""
+
+echo "Please enter the path inside ROOT-CA/certs/ where the certificate to be revoked is in. The certificate is expected in filename cert-rsa.pem:"
+read CERT_PATH
+
+$openssl ca -config ./settings/openssl-rsa.cnf -keyfile ./ROOT-RSA/private/cakey.pem -cert ./ROOT-RSA/cacert.pem -revoke ./ROOT-RSA/certs/$CERT_PATH/cert-rsa.pem
+
+echo -e "\n\t\tDone. Creating new CRL."
+
+./CA.newCRL
+
+echo -e "Remember to notify consumers of the CRL of the new version in a timely manner!\n\n"

@@ -23,10 +23,10 @@ echo "Ready to revoke a certificate..."
 echo "--------------------------------"
 echo ""
 
-echo "Please enter the path inside ROOT-CA/certs/ where the certificate to be revoked is in. The certificate is expected in filename cert-srv.pem:"
+echo "Please enter the path inside ROOT-ECDSA/certs/ where the certificate to be revoked is in. The certificate is expected in filename cert-ecdsa.pem:"
 read CERT_PATH
 
-$openssl ca -config ./settings/openssl.cnf -keyfile ./ROOT-CA/private/cakey.pem -cert ./ROOT-CA/cacert.pem -revoke ./ROOT-CA/certs/$CERT_PATH/cert-srv.pem
+$openssl ca -config ./settings/openssl-ecdsa.cnf -keyfile ./ROOT-ECDSA/private/cakey.pem -cert ./ROOT-ECDSA/cacert.pem -revoke ./ROOT-ECDSA/certs/$CERT_PATH/cert-ecdsa.pem
 
 echo -e "\n\t\tDone. Creating new CRL."
 

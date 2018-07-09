@@ -12,6 +12,6 @@
 
 echo "Wiping out the entire CA."
 
-rm -r ROOT-CA settings/random 
+rm -r ROOT-RSA ROOT-ECDSA settings/random 
 
 echo "Done."
