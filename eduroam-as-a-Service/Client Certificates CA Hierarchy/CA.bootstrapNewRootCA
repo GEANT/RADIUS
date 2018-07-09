@@ -99,3 +99,5 @@ mv newreq-ecdsa.pem ROOT-ECDSA/private/
 dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-RSA/serial
 dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-ECDSA/serial
 
+mkdir ROOT-RSA/OCSP
+mkdir ROOT-ECDSA/OCSP

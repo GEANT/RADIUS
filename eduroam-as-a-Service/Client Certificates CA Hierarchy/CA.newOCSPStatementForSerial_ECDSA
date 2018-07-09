@@ -23,6 +23,6 @@ echo "Ready to create new OCSP Response for serial $1 ..."
 echo "---------------------------------------------------"
 echo ""
 
-$openssl ocsp -issuer ROOT-CA/cacert.pem -sha256 -sha256 -no_nonce -serial $1 -CA ROOT-CA/cacert.pem -ndays 365 -rsigner ROOT-CA/cacert.pem -rkey ROOT-CA/private/cakey.pem -index ROOT-CA/index.txt -no_cert_verify -respout ROOT-CA/OCSP/$1.response.der
+$openssl ocsp -issuer ROOT-ECDSA/cacert.pem -sha1 -no_nonce -serial $1 -CA ROOT-ECDSA/cacert.pem -ndays 20000 -rsigner ROOT-ECDSA/cacert.pem -rkey ROOT-ECDSA/private/cakey.pem -index ROOT-ECDSA/index.txt -no_cert_verify -respout ROOT-ECDSA/OCSP/$1.response.der
 
-echo -e "\n\t\tDone. The new OCSP response is in ROOT-CA/OCSP/$1.response.der\n\n"
+echo -e "\n\t\tDone. The new OCSP response is in ROOT-ECDSA/OCSP/$1.response.der\n\n"
