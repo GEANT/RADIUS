@@ -68,28 +68,35 @@ echo -e ""
 echo -e "\t\t##################"
 echo -e "\t\tcreating private key and cert request"
 echo -e "\t\t##################\n"
-
-$openssl req -config $cnfpath -new -newkey rsa:4096 -sha512 -x509 -keyout newreq.pem -out newreq.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD 
+$openssl ecparam -name secp521 >ec-521.param
+$openssl req -config $cnfpath -new -newkey rsa:4096 -sha512 -x509 -keyout newreq.pem -out newreq.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config $cnfpath -new -newkey ec:ec-521.param -ecdsa-with-sha1 -x509 -keyout newreq-ecdsa.pem -out newreq-ecsda.pem -days 20000 -passin pass:$PASSWORD -passout pass:$PASSWORD
 
 echo -e ""
 echo -e "\t\t##################"
-echo -e "\t\tcreate CA by self-signing request"
+echo -e "\t\tcreate RSA CA by self-signing request"
 echo -e "\t\t##################\n"
 
-echo "newreq.pem" | $cascript -newca
+echo "newreq.pem" | ./settings/CA-RSA.pl -newca
+echo "newreq-ecdsa.pem" | ./settings/CA-ECDSA.pl -newca
 
 echo -e ""
 echo -e "\t\t##################"
 echo -e "\t\texporting CA in varius formats"
 echo -e "\t\t##################\n"
 
-$openssl pkcs12 -export -in ROOT-CA/cacert.pem -inkey newreq.pem -out ROOT-CA/private/root.p12 -cacerts -passin pass:$PASSWORD -passout pass:$PASSWORD
-$openssl pkcs12 -in ROOT-CA/private/root.p12 -out ROOT-CA/private/root.pem -passin pass:$PASSWORD -passout pass:$PASSWORD
-$openssl x509 -inform PEM -outform DER -in ROOT-CA/private/root.pem -out ROOT-CA/private/root.der
-mv newreq.pem ROOT-CA/private/
+$openssl pkcs12 -export -in ROOT-RSA/cacert.pem -inkey newreq.pem -out ROOT-RSA/private/root.p12 -cacerts -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl pkcs12 -export -in ROOT-ECDSA/cacert.pem -inkey newreq-ecdsa.pem -out ROOT-ECDSA/private/root.p12 -cacerts -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl pkcs12 -in ROOT-RSA/private/root.p12 -out ROOT-RSA/private/root.pem -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl pkcs12 -in ROOT-ECDSA/private/root.p12 -out ROOT-ECDSA/private/root.pem -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl x509 -inform PEM -outform DER -in ROOT-RSA/private/root.pem -out ROOT-RSA/private/root.der
+$openssl x509 -inform PEM -outform DER -in ROOT-ECDSA/private/root.pem -out ROOT-ECDSA/private/root.der
+mv newreq.pem ROOT-RSA/private/
+mv newreq-ecdsa.pem ROOT-ECDSA/private/
 
-dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-CA/serial
+dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-RSA/serial
+dd if=$randomsource count=1 | tr -dc [:xdigit:] | cut -c 1-12 | tr '[:upper:]' '[:lower:]' > ROOT-ECDSA/serial
 
-mkdir ROOT-CA/OCSP
-
+mkdir ROOT-RSA/OCSP
+mkdir ROOT-ECDSA/OCSP
 
