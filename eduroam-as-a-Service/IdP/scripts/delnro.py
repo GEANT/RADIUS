@@ -8,7 +8,7 @@ from subprocess import call
 
 
 def main(argv):
-    instdir = '/opt/tls/'
+    instdir = 'FR_INSTALLATION_DIRECTORY'
 
     scriptsdir = instdir+'scripts/'
     configfile = scriptsdir+'sb.conf'

@@ -10,8 +10,7 @@ def main(argv):
     """
         define the RADIUS instalation path here
     """
-    instdir = '/opt/tls/'
-    print instdir
+    instdir = 'FR_INSTALLATION_DIRECTORY'
     scriptsdir = instdir+'scripts/'
     configfile = scriptsdir+'sb.conf'
     config = ConfigParser.ConfigParser()

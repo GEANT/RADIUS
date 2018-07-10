@@ -25,7 +25,7 @@ def check_nros():
     """
         define the RADIUS instalation path here
     """
-    instdir = '/opt/tls/'
+    instdir = 'FR_INSTALLATION_DIRECTORY'
     scriptsdir = instdir+'scripts/'
     configfile = scriptsdir+'sb.conf'
     config = ConfigParser.ConfigParser()
