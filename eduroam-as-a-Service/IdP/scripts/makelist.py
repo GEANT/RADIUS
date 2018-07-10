@@ -19,18 +19,31 @@ def main(argv):
     nrofile = templdir + 'known_nros'
     good_crldp = False
     crldp = ''
-    try:
+    srcfile = ''
+    dstfile = ''
+    if len(sys.argv) > 1:
         crldp = sys.argv[1]
+    if len(sys.argv) < 3:
+        srcfile = nrofile
+    else:
+        srcfile = sys.argv[2]
+    print crldp
+    if crldp != '':
         if (crldp.strip().startswith('http://') or \
             crldp.strip().startswith('https://')):
                 good_crldp = True
-    except:
-        pass
     if not good_crldp:
         while not good_crldp:
-            crldp = raw_input("CRL Distributon Point or quit: ")
+            crldp = raw_input("CRL Distributon Point or quit or help: ")
             crldp = crldp.strip()
             if crldp == 'quit':
+                sys.exit(0)
+            if crldp == 'help':
+                print('Usage: makelist.py [arg1 [arg2]]')
+                print('no arguments:\tasks for CRL Distribution Point '
+                      'and uses templates/known_nros as source file')
+                print('one argument:\tCRL Distribution Point')
+                print('two arguments:\tCRL Distribution Point and source file with NRO codes')
                 sys.exit(0)
             if crldp.startswith('http://') or crldp.startswith('https://'):
                 good_crldp = True
@@ -38,10 +51,16 @@ def main(argv):
                 print 'CRLDP must start with http:// or https://'
     if not crldp.endswith('/'):
         crldp = crldp + '/'
-    if os.path.isfile(nrofile):
-        with open(nrofile, 'r') as f:
+    print "CRLDP:", crldp
+    if os.path.isfile(srcfile):
+        with open(srcfile, 'r') as f:
+           print 'source file:', srcfile
+           dstfile = templdir + 'nros_file'
+           print 'destination file:', dstfile
+           fw = open(dstfile, 'w')
            for row in f:
-               print row.rstrip(), crldp + row.rstrip() + '.der'
+               fw.write(row.rstrip() + ' ' + crldp + row.rstrip() + '.der\n')
+           fw.close()
 
 if __name__ == "__main__":
     main(sys.argv[1:])

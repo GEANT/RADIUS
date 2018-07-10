@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os
 import re
+import sys
 from shutil import move
 
 prefix = 'scripts/'
@@ -22,5 +23,4 @@ for fname in ['sb.py', 'addnro.py', 'delnro.py', 'makelist.py']:
            fw.close()
            move(tmp + fname, prefix + fname)
            os.chmod(prefix + fname, 0755)
-
 
