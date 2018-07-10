@@ -21,4 +21,6 @@ for fname in ['sb.py', 'addnro.py', 'delnro.py', 'makelist.py']:
                    fw.write(row)
            fw.close()
            move(tmp + fname, prefix + fname)
+           os.chmod(prefix + fname, 0755)
+
 
