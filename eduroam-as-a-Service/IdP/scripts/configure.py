@@ -53,7 +53,7 @@ if cnt == 12:
         if os.path.isdir(fname):
             copytree(fname, install + fname, True)
     print('Go to the installation directory to create NROs configuration.')
-    print('Next steps')
+    print('Next steps:')
     print('\tcd ' + install)
     print('\t./scripts/addnro.py')
 else:
