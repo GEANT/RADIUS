@@ -1,5 +1,9 @@
 ### eduroam-as-a-Service - IdP tools
 
+To start run:
+   ``.\scripts\configure.py``
+to initialize an install directory structure.
+
 This directory contains config files for RADIUS-TLS.
 
 * **etc** subdirectory contains files for FreeRADIUS configuration
