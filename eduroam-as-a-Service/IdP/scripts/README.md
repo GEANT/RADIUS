@@ -3,8 +3,8 @@
 This directory contains scripts used to create the RADIUS-TLS configuration
 for a new NRO.
 
-#### instpath.py script
-Use it at a very beginning to set the installation path.
+#### configure.py script
+Use it at a very beginning to set the installation path and initialize directory structure.
 
 #### makelist.py script
 Creates the list NRO / CRLDP one per line:
