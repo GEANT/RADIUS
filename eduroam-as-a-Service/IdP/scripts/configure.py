@@ -50,6 +50,7 @@ if cnt == 8:
     print('Go to the installation directory to create NROs configuration.')
     print('Next steps:')
     print('\tcd ' + install)
+    print('\t./scripts/makelist.py')
     print('\t./scripts/addnro.py')
 else:
     print 'Check errors'
