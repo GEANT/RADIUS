@@ -51,6 +51,6 @@ if cnt == 8:
     print('Next steps:')
     print('\tcd ' + install)
     print('\t./scripts/makelist.py')
-    print('\t./scripts/addnro.py')
+    print('\t./scripts/addnro.py templates/nros_file')
 else:
     print 'Check errors'
