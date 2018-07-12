@@ -2,7 +2,8 @@
 import os
 import re
 import sys
-from shutil import move, copytree
+from shutil import move
+from distutils.dir_util import copy_tree
 
 install = raw_input("FR installation path or quit: ")
 if install == 'quit':
@@ -43,7 +44,7 @@ if cnt == 8:
     print('Success!')
     for fname in os.listdir('.'):
         if os.path.isdir(fname):
-            copytree(fname, install + fname, True)
+            copy_tree(fname, install + fname)
     for fname in ['sb.py', 'addnro.py', 'delnro.py', 'makelist.py']:
         move(install + tmp + fname, install + prefix + fname)
         os.chmod(install + prefix + fname, 0755)
