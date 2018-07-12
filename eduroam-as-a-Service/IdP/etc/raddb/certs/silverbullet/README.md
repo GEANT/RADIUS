@@ -1,4 +1,3 @@
-# this direcory contains:
-# - certificates of CAs issuing server certificates
-# - servers certificates
-# - certificate of CA issuing users certificates
+# this directory contains 
+# - subdirectories for each NRO with server certificates 
+# - ``common`` subdirectory for root CAs

@@ -1,8 +1,8 @@
 server silverbullet {
 listen {
 	type = auth
-	ipaddr = 127.0.0.1
-	port = 2812
+	ipaddr = *
+	port = 1812
 	limit {
 	      max_connections = 16
 	      lifetime = 0
@@ -13,7 +13,7 @@ listen {
 listen {
 	ipaddr = *
 #	ipv6addr = ::
-	port = 2813
+	port = 1813
 	type = acct
 	limit {
 	}
@@ -24,15 +24,18 @@ authorize {
 	preprocess
 #	operator-name
 #	cui
-	auth_log
 	suffix
+	auth_log
 	if (!Realm) {
 		update control {
 			Auth-Type := Reject
 		}
 	}
-	eap {
-		ok = return
+        $INCLUDE ${raddbdir}/eap-authorize.d/
+	if (!Realm) {
+		eap {
+			ok = return
+		}
 	}
 	files
 	expiration
@@ -41,7 +44,10 @@ authorize {
 
 
 authenticate {
-	eap
+	Auth-Type eap {
+		eap
+	}
+	$INCLUDE ${raddbdir}/eap-authenticate.d/
 }
 
 
@@ -59,7 +65,7 @@ accounting {
 #	cui
 	detail
 #	daily
-	-sql
+#	-sql
 	attr_filter.accounting_response
 }
 
@@ -75,12 +81,12 @@ post-auth {
 
 #	cui
 #	reply_log
-	-sql
+#	-sql
 #	sql_log
 	remove_reply_message_if_eap
 	Post-Auth-Type REJECT {
 		# log failed authentications in SQL, too.
-		-sql
+		#-sql
 		attr_filter.access_reject
 		eap
 		remove_reply_message_if_eap
