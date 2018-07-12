@@ -37,21 +37,16 @@ for fname in ['sb.py', 'addnro.py', 'delnro.py', 'makelist.py']:
                 else:
                     fw.write(row)
             fw.close()
-            try:
-                move(tmp + fname, prefix + fname)
-                cnt = cnt + 1
-            except IOError:
-                print('ERROR: ' + 'move ' + tmp + fname + 'to' +
-                      prefix + fname + ' failed')
-                continue
-            os.chmod(prefix + fname, 0755)
     else:
         print('ERROR: ' + prefix + fname + ' not found')
-if cnt == 12:
+if cnt == 8:
     print('Success!')
     for fname in os.listdir('.'):
         if os.path.isdir(fname):
             copytree(fname, install + fname, True)
+    for fname in ['sb.py', 'addnro.py', 'delnro.py', 'makelist.py']:
+        move(install + tmp + fname, install + prefix + fname)
+        os.chmod(install + prefix + fname, 0755)
     print('Go to the installation directory to create NROs configuration.')
     print('Next steps:')
     print('\tcd ' + install)
