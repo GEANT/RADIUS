@@ -36,7 +36,7 @@ mkdir servers
 else
 cd $NRO
 fi
-openssl genrsa -out servers/$NRO.key $KEYSIZE -config ../openssl.cnf
+openssl genrsa -out servers/$NRO.key $KEYSIZE
 Host="$h"
 echo $Host
 echo $Country > /tmp/cert-data
