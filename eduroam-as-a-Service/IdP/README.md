@@ -1,10 +1,18 @@
 ### eduroam-as-a-Service - IdP tools
 
-To start run:
-   ``.\scripts\configure.py``
-to initialize an install directory structure.
+#### Howto start
+Download the latest stable freeRADIUS version, compile and install.
 
-This directory contains config files for RADIUS-TLS.
+Fetch this git content.
+
+Run the configuration script to initialize a target directory structure:
+```
+cd RADIUS/eduroam-as-a-Service/IdP
+.\scripts\configure.py
+```
+Then follow instructions on screen.
+
+#### About this directory
 
 * **etc** subdirectory contains files for FreeRADIUS configuration
 
@@ -12,10 +20,9 @@ This directory contains config files for RADIUS-TLS.
 
 * **templates** subdirectory contains template files
 
-Copy files from **etc/raddb** subdirectory to the RADIUS-TLS configuration.
+Files from **etc/raddb** subdirectory will go to the RADIUS-TLS configuration.
 
-Go to the FreeRADIUS installation tree and remove *default* and *inner-tunnel* from *etc/raddb/sites-enabled*.
+Make sure that *default* and *inner-tunnel* sites are not enabled in your configuration. 
 
-Copy **scripts** and **templates** subdirectory to the RADIUS-TLS installation directory.
 
 
