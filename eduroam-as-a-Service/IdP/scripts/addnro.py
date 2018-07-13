@@ -253,6 +253,17 @@ def main(argv):
         to read new configuration
     """
     radius_restart()
+    """
+        what next
+    """
+    print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
+    print("Do not forget to adjust the FreeRADIUS configuration\n")
+    print("i\tremove symbolic links:\n")
+    print("\t\t" + install + "etc/raddb/sites-enabled/default\n")
+    print("\t\t" + install + "etc/raddb/sites-enabled/inner-tunnel\n")
+    print("\tadjust certificates settings - check all __change_it__"
+          " in etc/raddb/sites-enabled/tls\n")
+    
 
 if __name__ == "__main__":
     main(sys.argv[1:])

@@ -48,6 +48,10 @@ if cnt == 8:
     for fname in ['sb.py', 'addnro.py', 'delnro.py', 'makelist.py']:
         move(install + tmp + fname, install + prefix + fname)
         os.chmod(install + prefix + fname, 0755)
+    if os.path.isfile(install + 'etc/raddb/sites-enabled/default')
+        os.unlink(install + 'etc/raddb/sites-enabled/default')
+    if os.path.isfile(install + 'etc/raddb/sites-enabled/inner-tunnel')
+        os.unlink(install + 'etc/raddb/sites-enabled/inner-tunnel')
     print('Go to the installation directory to create NROs configuration.')
     print('Next steps:')
     print('\tcd ' + install)
