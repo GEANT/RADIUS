@@ -11,7 +11,10 @@ def radius_restart():
     systemd1 = sysbus.get_object('org.freedesktop.systemd1',
                                  '/org/freedesktop/systemd1')
     manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
-    job = manager.RestartUnit('radiusd.service', 'fail')
+    try:
+        job = manager.RestartUnit('radiusd.service', 'fail')
+    except:
+        print('FR restared skipped')
 
 
 def yn_choice(msg, default='y'):
