@@ -160,8 +160,8 @@ listen {
 		#    'c_rehash' is OpenSSL's command.
 		#  3) uncomment the line below.
 		#  5) Restart radiusd
-	#	check_crl = yes
-		ca_path = ${cadir}
+		check_crl = yes
+		ca_path = __change_it__
 
 	       #
 	       #  If check_cert_issuer is set, the value will
