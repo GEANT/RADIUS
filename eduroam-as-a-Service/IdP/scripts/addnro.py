@@ -139,7 +139,7 @@ def main(argv):
         """
             create all config files
         """
-        realm = nro + '.test.hosted.eduroam.org'
+        realm = nro + '.hosted.eduroam.org'
         esc_realm = realm.replace('.', '\\.')
         lines = []
         lines = []
