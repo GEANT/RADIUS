@@ -112,7 +112,7 @@ listen {
 		#  not use client certificates, and you do not want
 		#  to permit EAP-TLS authentication, then delete
 		#  this configuration item.
-		ca_file = __change_it__
+		#ca_file = ${cadir}/ca.pem
 
 		#
 		#  For DH cipher suites to work, you have to
@@ -338,34 +338,16 @@ listen {
 }
 
 clients radsec {
-	client 127.0.0.1 {
-		ipaddr = 127.0.0.1
-
-		#
-		#  Ensure that this client is TLS *only*.
-		#
-		proto = tls
-
-		#
-		#  TCP clients can have any shared secret.
-		#
-		#  TLS clients MUST have the shared secret
-		#  set to "radsec".  Or, for "proto = tls",
-		#  you can omit the secret, and it will
-		#  automatically be set to "radsec".
-		#
-		secret = radsec
-
-		#
-		#  You can also use a "limit" section here.
-		#  See raddb/clients.conf for examples.
-		#
-		#  Note that BOTH limits are applied.  You
-		#  should therefore set the "listen" limits
-		#  higher than the ones for each individual
-		#  client.
-		#
-	}
+        client 0.0.0.0/0 {
+                secret  = radsec
+                proto = tls
+                ipaddr = 0.0.0.0/0
+        }
+        client ::/0 {
+                secret  = radsec
+                proto = tls
+                ipaddr = ::/0
+        }
 }
 
 home_server tls {
