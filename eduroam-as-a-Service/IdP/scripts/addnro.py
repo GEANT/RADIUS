@@ -263,6 +263,8 @@ def main(argv):
     print("\t\t" + instdir + "etc/raddb/sites-enabled/inner-tunnel\n")
     print("\tadjust certificates settings - see all __change_it__"
           " in " + instdir + "etc/raddb/sites-enabled/tls\n")
+    print("\tadjust clients settings"
+          " in " + instdir + "etc/raddb/clients.conf\n")
     
 
 if __name__ == "__main__":
