@@ -37,6 +37,11 @@ version=$($openssl version)
 
 currentver=$($openssl version | cut -c 9,11,13)
 
+randomsource=/dev/hwrng
+echo -n "Generating random source file ... "
+dd if=$randomsource of=settings/random count=2
+
+
 echo -e ""
 echo -e "\t\t##################"
 echo -e "\t\tCreating new sub-CA certificate"
@@ -64,8 +69,8 @@ done
   echo "Please enter the path to put the cert into: "
   read CERT_PATH
 
-$openssl req -config ./settings/openssl-rsa.cnf -new -newkey rsa:4096 -sha512 -keyout cert-srv-key.pem -out newreq-rsa.pem -days 365 -passin pass:$PASSWORD -passout pass:$PASSWORD
-$openssl req -config ./settings/openssl-ecdsa.cnf -new -newkey ec:ec-521.param -sha512 -keyout cert-ecsrv-key.pem -out newreq-ecdsa.pem -days 365 -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-rsa.cnf -rand ./settings/random -new -newkey rsa:4096 -sha512 -keyout cert-srv-key.pem -out newreq-rsa.pem -days 365 -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-ecdsa.cnf -rand ./settings/random -new -newkey ec:ec-521.param -sha512 -keyout cert-ecsrv-key.pem -out newreq-ecdsa.pem -days 365 -passin pass:$PASSWORD -passout pass:$PASSWORD
 
 $openssl ca -keyfile ./ROOT-RSA/private/cakey.pem -extensions v3_intermediate_ca -config ./settings/openssl-rsa.cnf -policy policy_match -out newcert-rsa.pem -infiles newreq-rsa.pem
 $openssl ca -keyfile ./ROOT-ECDSA/private/cakey.pem -extensions v3_intermediate_ca -config ./settings/openssl-ecdsa.cnf -policy policy_match -out newcert-ecdsa.pem -infiles newreq-ecdsa.pem
