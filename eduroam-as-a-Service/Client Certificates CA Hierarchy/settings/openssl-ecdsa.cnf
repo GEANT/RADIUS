@@ -107,8 +107,8 @@ crlDistributionPoints=URI:http://ocsp.hosted.eduroam.org/rootca/crl.der
 
 [ocsp_info]
 
-caIssuers;URI.0         = http://ocsp.hosted.eduroam.org/rootca/cert.crt
-OCSP;URI.0              = http://ocsp.hosted.eduroam.org/rootca/ocsp
+caIssuers;URI.0         = http://ocsp.hosted.eduroam.org/ecdsa/user-root/cacert.crt
+OCSP;URI.0              = http://ocsp.hosted.eduroam.org/ecdsa/user-root/ocsp
 
 [ crl_ext ]
 
