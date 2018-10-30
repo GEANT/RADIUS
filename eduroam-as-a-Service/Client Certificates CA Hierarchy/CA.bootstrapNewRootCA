@@ -39,7 +39,7 @@ openssl=$(which openssl)
 version=$($openssl version)
 # when using the hardware random number generator on a Raspberry Pi, 
 # change the file name to /dev/hwrng
-randomsource=/dev/urandom
+randomsource=/dev/hwrng
 
 echo "openSSL path   : $openssl"
 echo "openSSL version: $version"
