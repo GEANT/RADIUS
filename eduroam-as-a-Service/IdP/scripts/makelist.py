@@ -59,7 +59,7 @@ def main(argv):
            print 'destination file:', dstfile
            fw = open(dstfile, 'w')
            for row in f:
-               fw.write(row.rstrip() + ' ' + crldp + row.rstrip() + '/root.crl\n')
+               fw.write(row.rstrip() + ' ' + crldp + row.rstrip() + '/crl/root.crl\n')
            fw.close()
 
 if __name__ == "__main__":
