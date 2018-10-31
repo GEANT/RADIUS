@@ -103,7 +103,7 @@ keyUsage = critical, cRLSign, keyCertSign, digitalSignature
 
 authorityInfoAccess = @ocsp_info
 
-crlDistributionPoints=URI:http://ocsp.hosted.eduroam.org/rootca/crl.der
+crlDistributionPoints=URI:http://ocsp.hosted.eduroam.org/ecdsa/user-root/crl.der
 
 [ocsp_info]
 
