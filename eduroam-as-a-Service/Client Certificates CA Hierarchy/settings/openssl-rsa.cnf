@@ -80,7 +80,7 @@ organizationalUnitName		= Organizational Unit Name (eg, section)
 organizationalUnitName_default	= eduroam Managed IdP
 
 commonName			= Common Name
-commonName_default              = eduroam Managed IdP Client Auth Root CA G1
+commonName_default              = eduroam Managed IdP User Authentication CA Gen 1R
 commonName_max			= 64
 
 [ req_attributes ]
