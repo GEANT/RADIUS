@@ -257,14 +257,8 @@ def main(argv):
         what next
     """
     print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-    print("Do not forget to adjust the FreeRADIUS configuration\n")
-    print("\tremove symbolic links if they still exist:\n")
-    print("\t\t" + instdir + "etc/raddb/sites-enabled/default\n")
-    print("\t\t" + instdir + "etc/raddb/sites-enabled/inner-tunnel\n")
-    print("\tadjust certificates settings - see all __change_it__"
-          " in " + instdir + "etc/raddb/sites-enabled/tls\n")
-    print("\tadjust clients settings"
-          " in " + instdir + "etc/raddb/clients.conf\n")
+    print("READY!\n")
+    print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
     
 
 if __name__ == "__main__":
