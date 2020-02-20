@@ -70,9 +70,8 @@ PASSWORD=$1
 fi
 
 if [[ "$2" != "" ]]; then
-SUBJ="-subj"
-SUBJECT_R="$2 R";
-SUBJECT_E="$2 E";
+KEYARG="-key"
+KEY="$2"
 fi
 
 if [[ "$3" == "" ]]; then
@@ -84,8 +83,9 @@ CERT_PATH=$3
 fi
 
 if [[ "$4" != "" ]]; then
-KEYARG="-key"
-KEY="$4"
+SUBJ="-subj"
+SUBJECT_R="$4 R";
+SUBJECT_E="$4 E";
 fi
 
 $openssl req -config ./settings/openssl-rsa.cnf -rand ./settings/random -new -newkey rsa:4096 -sha512 -keyout cert-srv-key.pem -out newreq-rsa.pem -days 365 $SUBJ "$SUBJECT_R" -passin pass:$PASSWORD -passout pass:$PASSWORD
