@@ -48,7 +48,7 @@ echo -n "Generating random source file ... "
 
 dd if=$randomsource of=settings/random count=2
 
-if ["$1" == ""]; then
+if [[ "$1" == "" ]]; then
 while true; do
 echo
 echo "Please enter the password for the CA: "
@@ -64,9 +64,9 @@ else
 PASSWORD=$1
 fi
 
-if ["$2" != ""]; then
-SUBJECT_R="-subj $1 R";
-SUBJECT_E="-subj $1 E";
+if [[ "$2" != "" ]]; then
+SUBJECT_R="-subj $2 R";
+SUBJECT_E="-subj $2 E";
 fi
 
 echo -e ""
