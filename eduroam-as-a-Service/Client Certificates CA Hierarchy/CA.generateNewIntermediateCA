@@ -53,6 +53,7 @@ echo -e "\t\tYou need to enter a new common name for this section"
 echo -e "\t\tWe recommend SITENAME_server_cert"
 echo -e "\t\t##################\n"
 
+if [[ "$1" == "" ]]; then
 while true; do
   echo
   echo "Please enter the password for the intermediate CA certificate: "
@@ -63,14 +64,27 @@ while true; do
     y* | Y* ) echo "next step.." ; break ;;
     [nN]* )   echo "Check your keyboard and try again" ;;
   esac
-done
+done;
+else
+PASSWORD=$1
+fi
 
+if [[ "$2" != "" ]]; then
+SUBJ="-subj"
+SUBJECT_R="$2 R";
+SUBJECT_E="$2 E";
+fi
+
+if [[ "$3" == "" ]]; then
   echo
   echo "Please enter the path to put the cert into: "
-  read CERT_PATH
+  read CERT_PATH;
+else
+CERT_PATH=$3
+fi
 
-$openssl req -config ./settings/openssl-rsa.cnf -rand ./settings/random -new -newkey rsa:4096 -sha512 -keyout cert-srv-key.pem -out newreq-rsa.pem -days 365 -passin pass:$PASSWORD -passout pass:$PASSWORD
-$openssl req -config ./settings/openssl-ecdsa.cnf -rand ./settings/random -new -newkey ec:ec-521.param -sha512 -keyout cert-ecsrv-key.pem -out newreq-ecdsa.pem -days 365 -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-rsa.cnf -rand ./settings/random -new -newkey rsa:4096 -sha512 -keyout cert-srv-key.pem -out newreq-rsa.pem -days 365 $SUBJ "$SUBJECT_R" -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-ecdsa.cnf -rand ./settings/random -new -newkey ec:ec-521.param -sha512 -keyout cert-ecsrv-key.pem -out newreq-ecdsa.pem -days 365 $SUBJ "$SUBJECT_R" -passin pass:$PASSWORD -passout pass:$PASSWORD
 
 $openssl ca -keyfile ./ROOT-RSA/private/cakey.pem -extensions v3_intermediate_ca -config ./settings/openssl-rsa.cnf -policy policy_match -out newcert-rsa.pem -infiles newreq-rsa.pem
 $openssl ca -keyfile ./ROOT-ECDSA/private/cakey.pem -extensions v3_intermediate_ca -config ./settings/openssl-ecdsa.cnf -policy policy_match -out newcert-ecdsa.pem -infiles newreq-ecdsa.pem
