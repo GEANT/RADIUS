@@ -62,6 +62,7 @@ read PASSWORD
 done;
 else
 PASSWORD=$0
+fi
 
 echo -e ""
 echo -e "\t\t##################"
