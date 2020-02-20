@@ -71,7 +71,7 @@ fi
 
 if [[ "$2" != "" ]]; then
 KEYARG="-key"
-KEY="$2"
+KEY=$2
 fi
 
 if [[ "$3" == "" ]]; then
