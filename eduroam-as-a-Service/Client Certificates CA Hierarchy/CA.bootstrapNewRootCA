@@ -61,7 +61,7 @@ read PASSWORD
  esac
 done;
 else
-PASSWORD=$0
+PASSWORD=$1
 fi
 
 if ["$2" != ""]; then
