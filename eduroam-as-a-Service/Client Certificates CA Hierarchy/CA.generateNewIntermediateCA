@@ -89,7 +89,7 @@ SUBJECT_E="$4 E";
 fi
 
 $openssl req -config ./settings/openssl-rsa.cnf -rand ./settings/random -new -newkey rsa:4096 -sha512 -keyout cert-srv-key.pem -out newreq-rsa.pem -days 365 $SUBJ "$SUBJECT_R" -passin pass:$PASSWORD -passout pass:$PASSWORD
-$openssl req -config ./settings/openssl-ecdsa.cnf -rand ./settings/random -new -newkey ec:ec-521.param -sha512 -keyout cert-ecsrv-key.pem -out newreq-ecdsa.pem -days 365 $SUBJ "$SUBJECT_R" -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-ecdsa.cnf -rand ./settings/random -new -newkey ec:ec-521.param -sha512 -keyout cert-ecsrv-key.pem -out newreq-ecdsa.pem -days 365 $SUBJ "$SUBJECT_E" -passin pass:$PASSWORD -passout pass:$PASSWORD
 
 $openssl ca -keyfile ./ROOT-RSA/private/cakey.pem $KEYARG $KEY -extensions v3_intermediate_ca -config ./settings/openssl-rsa.cnf -policy policy_match -out newcert-rsa.pem -infiles newreq-rsa.pem
 $openssl ca -keyfile ./ROOT-ECDSA/private/cakey.pem $KEYARG $KEY -extensions v3_intermediate_ca -config ./settings/openssl-ecdsa.cnf -policy policy_match -out newcert-ecdsa.pem -infiles newreq-ecdsa.pem
