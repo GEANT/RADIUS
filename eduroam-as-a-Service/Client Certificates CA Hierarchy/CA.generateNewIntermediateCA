@@ -70,7 +70,7 @@ PASSWORD=$1
 fi
 
 if [[ "$2" != "" ]]; then
-KEYARG="-key"
+KEYARG="-batch -key"
 KEY=$2
 fi
 
