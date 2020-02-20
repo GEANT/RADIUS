@@ -65,8 +65,9 @@ PASSWORD=$1
 fi
 
 if [[ "$2" != "" ]]; then
-SUBJECT_R="-subj $2 R";
-SUBJECT_E="-subj $2 E";
+SUBJ="-subj"
+SUBJECT_R="$2 R";
+SUBJECT_E="$2 E";
 fi
 
 echo -e ""
@@ -74,8 +75,8 @@ echo -e "\t\t##################"
 echo -e "\t\tcreating private key and cert request"
 echo -e "\t\t##################\n"
 $openssl ecparam -name secp521r1 >ec-521.param
-$openssl req -config ./settings/openssl-rsa.cnf -rand ./settings/random -new -newkey rsa:4096 -sha512 -x509 -keyout newreq.pem -out newreq.pem -days 20000 $SUBJECT_R -passin pass:$PASSWORD -passout pass:$PASSWORD
-$openssl req -config ./settings/openssl-ecdsa.cnf -rand ./settings/random -new -newkey ec:ec-521.param -sha512 -x509 -keyout newreq-ecdsa.pem -out newreq-ecdsa.pem -days 20000 $SUBJECT_E -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-rsa.cnf -rand ./settings/random -new -newkey rsa:4096 -sha512 -x509 -keyout newreq.pem -out newreq.pem -days 20000 $SUBJ "$SUBJECT_R" -passin pass:$PASSWORD -passout pass:$PASSWORD
+$openssl req -config ./settings/openssl-ecdsa.cnf -rand ./settings/random -new -newkey ec:ec-521.param -sha512 -x509 -keyout newreq-ecdsa.pem -out newreq-ecdsa.pem -days 20000 $SUBJ "$SUBJECT_E" -passin pass:$PASSWORD -passout pass:$PASSWORD
 
 echo -e ""
 echo -e "\t\t##################"
